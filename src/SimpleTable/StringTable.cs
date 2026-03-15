@@ -127,7 +127,7 @@ public sealed class StringTable
             widths[c] = ColumnNamesList[c].Length;
         foreach (var row in ValuesByRow)
             for (int c = 0; c < ColumnCount; c++)
-                widths[c] = Math.Max(widths[c], row[c]?.Length ?? 0);
+                widths[c] = Math.Max(widths[c], row[c]?.Length ?? NullDisplayString.Length);
         return widths;
     }
 
@@ -140,14 +140,19 @@ public sealed class StringTable
         return sb.ToString();
     }
 
-    private static string BuildCellsRow(List<string?> cells, int[] widths, string nullValue = "--")
+    /// <summary>
+    /// Used for null values when displaying tables as text
+    /// </summary>
+    public static string NullDisplayString { get; set; } = "--";
+
+    private static string BuildCellsRow(List<string?> cells, int[] widths)
     {
         StringBuilder sb = new("|");
 
         for (int c = 0; c < cells.Count; c++)
         {
             sb.Append(' ')
-                .Append((cells[c] ?? nullValue)
+                .Append((cells[c] ?? NullDisplayString)
                 .PadRight(widths[c]))
                 .Append(" |");
         }
