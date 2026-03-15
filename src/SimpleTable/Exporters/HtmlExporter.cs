@@ -12,21 +12,21 @@ public static class HtmlExporter
         // header
         sb.AppendLine("<thead>");
         sb.AppendLine("<tr>");
-        for (int j = 0; j < table.ColumnCount; j++)
+        foreach (string columnName in table.ColumnNames)
         {
-            sb.AppendLine($"<th>{table.ColumnNames[j]}</th>");
+            sb.AppendLine($"<th>{columnName}</th>");
         }
         sb.AppendLine("</tr>");
         sb.AppendLine("</thead>");
 
         // rows
         sb.AppendLine("<tbody>");
-        for (int rowIndex = 0; rowIndex < table.RowCount; rowIndex++)
+        foreach (var row in table.Rows)
         {
             sb.AppendLine("<tr>");
-            for (int columnIndex = 0; columnIndex < table.ColumnCount; columnIndex++)
+            foreach (var cell in row.Values)
             {
-                sb.AppendLine($"<td>{table[rowIndex, columnIndex]}</td>");
+                sb.AppendLine($"<td>{cell}</td>");
             }
             sb.AppendLine("</tr>");
         }
@@ -39,6 +39,28 @@ public static class HtmlExporter
     public static string GetStyledHtml(StringTable table)
     {
         StringBuilder sb = new();
+
+        if (table.Metadata.Title != "Unnamed")
+        {
+            sb.AppendLine($"<h1>{table.Metadata.Title}</h1>");
+            sb.AppendLine($"<div>{table.Metadata.DateTime}</div>");
+        }
+
+        if (!string.IsNullOrWhiteSpace(table.Metadata.Description))
+        {
+            sb.AppendLine($"<div>{table.Metadata.Description}</div>");
+        }
+
+        if (table.Metadata.Details.Count > 0)
+        {
+            sb.AppendLine("<ul>");
+            foreach (string detail in table.Metadata.Details)
+            {
+                sb.AppendLine($"<li>{detail}</li>");
+            }
+            sb.AppendLine("</ul>");
+        }
+
         sb.AppendLine("<table style=\"border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 14px;\">");
 
         // header

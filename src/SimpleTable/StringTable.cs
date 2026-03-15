@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection.Emit;
+using System.Text;
 
 namespace SimpleTable;
 
@@ -70,7 +71,7 @@ public sealed class StringTable
 
     public override string ToString()
     {
-        return $"{Metadata.Name} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
+        return $"{Metadata.Title} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
     }
 
     /// <summary>Returns the zero-based index of a named column.</summary>
@@ -331,5 +332,16 @@ public sealed class StringTable
 
         for (int i = 0; i < names.Length; i++)
             SetColumnName(i, names[i]);
+    }
+
+    public void LaunchInDefaultBrowser(string? saveAs = null)
+    {
+        saveAs ??= $"{DateTime.UtcNow.Ticks}.html";
+        saveAs = Path.GetFullPath(saveAs);
+
+        string html = Exporters.HtmlExporter.GetStyledHtml(this);
+        string html2 = Exporters.Html.WrapInHtml(html);
+        File.WriteAllText(saveAs, html2);
+        Launch.DefaultBrowser(saveAs);
     }
 }
