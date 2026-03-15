@@ -91,4 +91,100 @@ public class StringTableRowTests
             }
         }
     }
+
+    [Test]
+    public void Test_StringTable_GetRow_ByIndex()
+    {
+        StringTable table = SampleData.UsersTable();
+        TableRow row = table.GetRow(2); // Ben
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(row.RowIndex, Is.EqualTo(2));
+            Assert.That(row.Values.Count, Is.EqualTo(3));
+            Assert.That(row.Values[0], Is.EqualTo("Ben"));
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_AppendRow_WrongCount_Throws()
+    {
+        StringTable table = SampleData.UsersTable();
+        Assert.Throws<ArgumentException>(() => table.AppendRow(["A", "B"]));
+    }
+
+    [Test]
+    public void Test_StringTable_AddRow_TableRow()
+    {
+        StringTable table = SampleData.UsersTable();
+        TableRow firstRow = table.GetRow(0);
+        table.AddRow(firstRow);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.RowCount, Is.EqualTo(5));
+            Assert.That(table[4, "Name"], Is.EqualTo("Scott"));
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_AddRows_Enumerable()
+    {
+        StringTable table = SampleData.UsersTable();
+        List<TableRow> newRows =
+        [
+            new() { RowIndex = 0, Values = ["Alice", "alice@test.com", "purple"] },
+            new() { RowIndex = 0, Values = ["Bob", "bob@test.com", "orange"] },
+        ];
+        table.AddRows(newRows);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.RowCount, Is.EqualTo(6));
+            Assert.That(table[4, "Name"], Is.EqualTo("Alice"));
+            Assert.That(table[5, "Name"], Is.EqualTo("Bob"));
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_AddRows_Table()
+    {
+        StringTable table = SampleData.UsersTable();
+        StringTable extra = new(["Name", "Email", "Color"]);
+        extra.AppendRow(["Alice", "alice@test.com", "purple"]);
+        table.AddRows(extra);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.RowCount, Is.EqualTo(5));
+            Assert.That(table[4, "Name"], Is.EqualTo("Alice"));
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_DeleteRow_ByIndex()
+    {
+        StringTable table = SampleData.UsersTable();
+        table.DeleteRow(1); // James
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.RowCount, Is.EqualTo(3));
+            Assert.That(table[1, "Name"], Is.EqualTo("Ben"));
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_DeleteRow_TableRow()
+    {
+        StringTable table = SampleData.UsersTable();
+        TableRow benRow = table.GetRow(2); // Ben
+        table.DeleteRow(benRow);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.RowCount, Is.EqualTo(3));
+            Assert.That(table[2, "Name"], Is.EqualTo("Rob"));
+        }
+    }
 }

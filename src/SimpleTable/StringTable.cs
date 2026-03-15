@@ -254,7 +254,9 @@ public sealed class StringTable
     {
         columnName ??= DefaultColumnName(ColumnCount + 1);
 
+        int newIndex = ColumnCount;
         ColumnNamesList.Add(columnName);
+        ColumnIndexesByName[columnName] = newIndex;
 
         for (int i = 0; i < RowCount; i++)
         {
@@ -277,7 +279,9 @@ public sealed class StringTable
 
     public void AddColumn(string columnName, IList<string?> values)
     {
+        int newIndex = ColumnCount;
         ColumnNamesList.Add(columnName);
+        ColumnIndexesByName[columnName] = newIndex;
 
         // pad existing rows with an empty cell
         for (int i = 0; i < RowCount; i++)
