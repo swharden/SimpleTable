@@ -219,4 +219,20 @@ public sealed class StringTable
 
         return sb.ToString();
     }
+
+    public List<string?> GetColumnValues(string columnName)
+    {
+        int columnIndex = ColumnIndexesByName[columnName];
+        return GetColumnValues(columnIndex);
+    }
+
+    public List<string?> GetColumnValues(int columnIndex)
+    {
+        return Enumerable.Range(0, RowCount).Select(x => this[x, columnIndex]).ToList();
+    }
+
+    public List<string?> GetRowValues(int rowIndex)
+    {
+        return Enumerable.Range(0, ColumnCount).Select(x => this[rowIndex, x]).ToList();
+    }
 }

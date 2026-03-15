@@ -111,4 +111,24 @@ public class StringTableTests
             Assert.That(table.Dimensions.ColumnCount, Is.EqualTo(initialDimensions.ColumnCount + 1));
         }
     }
+
+    [Test]
+    public void Test_StringTable_GetColumnValues()
+    {
+        StringTable table = SampleData.UsersTable();
+
+        Assert.That(
+            actual: string.Join(",", table.GetColumnValues("Color")),
+            expression: Is.EqualTo("red,green,blue,gray"));
+    }
+
+    [Test]
+    public void Test_StringTable_GetRowValues()
+    {
+        StringTable table = SampleData.UsersTable();
+
+        Assert.That(
+            actual: string.Join(",", table.GetRowValues(1)),
+            expression: Is.EqualTo("James,james@gmail.com,green"));
+    }
 }
