@@ -64,6 +64,6 @@ public class StringTableTests
     public void Test_StringTable_AddRow()
     {
         StringTable table = SampleData.UsersTable;
-        table.AddColumn();
+        table.AddColumn("Animal");
     }
 }

@@ -7,11 +7,11 @@ namespace SimpleTable;
 /// </summary>
 public sealed class StringTable
 {
-    private List<string?[]> Rows { get; } = [];
+    private List<List<string?>> ValuesByRow { get; } = []; // TODO: make list of lists
     private List<string> ColumnNamesList { get; }
     private Dictionary<string, int> ColumnIndexesByName { get; }
     public int ColumnCount => ColumnNamesList.Count;
-    public int RowCount => Rows.Count;
+    public int RowCount => ValuesByRow.Count;
     public IReadOnlyList<string> ColumnNames => ColumnNames;
 
 
@@ -29,8 +29,8 @@ public sealed class StringTable
 
     public string? this[int row, int col]
     {
-        get => Rows[row][col];
-        set => Rows[row][col] = value;
+        get => ValuesByRow[row][col];
+        set => ValuesByRow[row][col] = value;
     }
 
     public string? this[int row, string columnName]
@@ -55,16 +55,11 @@ public sealed class StringTable
             throw new ArgumentException(
                 $"Expected {ColumnNamesList.Count} values, got {values.Length}.", nameof(values));
 
-        Rows.Add((string?[])values.Clone());
-    }
-
-    public void AddColumn()
-    {
-
+        ValuesByRow.Add(values.ToList());
     }
 
     /// <summary>Removes all rows.</summary>
-    public void Clear() => Rows.Clear();
+    public void Clear() => ValuesByRow.Clear();
 
     /// <summary>
     /// Returns the table as an aligned plain-text string with box-drawing borders.
@@ -89,7 +84,7 @@ public sealed class StringTable
         sb.AppendLine(border);
         sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
         sb.AppendLine(headerSep);
-        foreach (string?[] row in Rows)
+        foreach (var row in ValuesByRow)
             sb.AppendLine(BuildCellsRow(row, widths));
         sb.AppendLine(border);
         return sb.ToString();
@@ -114,7 +109,7 @@ public sealed class StringTable
         var sb = new System.Text.StringBuilder();
         sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
         sb.AppendLine(headerSep);
-        foreach (string?[] row in Rows)
+        foreach (var row in ValuesByRow)
             sb.AppendLine(BuildCellsRow(row, widths));
         return sb.ToString();
     }
@@ -124,7 +119,7 @@ public sealed class StringTable
         int[] widths = new int[ColumnCount];
         for (int c = 0; c < ColumnCount; c++)
             widths[c] = ColumnNamesList[c].Length;
-        foreach (string?[] row in Rows)
+        foreach (var row in ValuesByRow)
             for (int c = 0; c < ColumnCount; c++)
                 widths[c] = Math.Max(widths[c], row[c]?.Length ?? 0);
         return widths;
@@ -139,11 +134,11 @@ public sealed class StringTable
         return sb.ToString();
     }
 
-    private static string BuildCellsRow(string?[] cells, int[] widths)
+    private static string BuildCellsRow(List<string?> cells, int[] widths)
     {
         StringBuilder sb = new("|");
 
-        for (int c = 0; c < cells.Length; c++)
+        for (int c = 0; c < cells.Count; c++)
         {
             sb.Append(' ')
                 .Append((cells[c] ?? string.Empty)
@@ -167,5 +162,16 @@ public sealed class StringTable
         }
 
         return sb.ToString();
+    }
+
+    public void AddColumn(string columnName)
+    {
+        int originalColumnCount = ColumnCount;
+
+        ColumnNamesList.Add(columnName);
+        for (int i = 0; i < RowCount; i++)
+        {
+
+        }
     }
 }
