@@ -429,4 +429,28 @@ public sealed class StringTable
             for (int c = 0; c < newColumnCount; c++)
                 this[r, c] = values[(initialRowCount - 1 - c) * initialColumnCount + r];
     }
+
+    public void DeleteRow(TableRow row) => DeleteRow(row.RowIndex);
+
+    public void DeleteRow(int rowIndex)
+    {
+        ValuesByRow.RemoveAt(rowIndex);
+    }
+
+    public void DeleteColumn(string columnName) => DeleteColumn(ColumnIndexesByName[columnName]);
+
+    public void DeleteColumn(TableColumn column) => DeleteColumn(column.ColumnIndex);
+
+    public void DeleteColumn(int columnIndex)
+    {
+        string columnName = ColumnNamesList[columnIndex];
+        ColumnNamesList.RemoveAt(columnIndex);
+        ColumnIndexesByName.Remove(columnName);
+
+        for (int i = columnIndex; i < ColumnNamesList.Count; i++)
+            ColumnIndexesByName[ColumnNamesList[i]] = i;
+
+        foreach (var row in ValuesByRow)
+            row.RemoveAt(columnIndex);
+    }
 }
