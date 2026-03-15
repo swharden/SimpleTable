@@ -46,6 +46,17 @@ public sealed class StringTable
     public string? GetValue(int row, int column) => this[row, column];
     public string? GetValue(int row, string columnName) => this[row, columnName];
 
+    public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList();
+
+    public TableRow GetRow(int rowIndex)
+    {
+        return new TableRow()
+        {
+            RowIndex = rowIndex,
+            Values = GetRowValues(rowIndex),
+        };
+    }
+
     public override string ToString()
     {
         return $"{Metadata.Name} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";

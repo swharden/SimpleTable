@@ -1,9 +1,12 @@
 ﻿using SimpleTable;
 
 StringTable table = SampleData.UsersTable();
-string saveAs = Path.GetFullPath("test.html");
 
-string html = SimpleTable.Exporters.HtmlExporter.GetStyledHtml(table);
-html = SimpleTable.Exporters.Html.WrapInHtml(html);
-File.WriteAllText(saveAs, html);
-Console.WriteLine(saveAs);
+foreach (var row in table.Rows)
+{
+    Console.WriteLine(row);
+    foreach (var cell in row)
+    {
+        Console.WriteLine("  " + cell);
+    }
+}
