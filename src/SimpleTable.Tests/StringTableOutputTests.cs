@@ -10,9 +10,9 @@ public class StringTableOutputTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(csv, Does.Contain("Name, Email, Color"));
-            Assert.That(csv, Does.Contain("Scott, scott@hotmail.com, red"));
-            Assert.That(csv, Does.Contain("Rob, rob@aol.com, gray"));
+            Assert.That(csv, Does.Contain("Name,Email,Color"));
+            Assert.That(csv, Does.Contain("Scott,scott@hotmail.com,red"));
+            Assert.That(csv, Does.Contain("Rob,rob@aol.com,gray"));
         }
     }
 
