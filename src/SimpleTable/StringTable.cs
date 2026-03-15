@@ -14,7 +14,7 @@ public sealed class StringTable
     public int RowCount => ValuesByRow.Count;
     public IReadOnlyList<string> ColumnNames => ColumnNamesList;
     public TableMetadata Metadata { get; set; } = new();
-
+    public TableDimensions Dimensions => new(RowCount, ColumnCount);
 
     public StringTable(params IEnumerable<string> columnNames)
     {
