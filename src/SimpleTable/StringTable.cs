@@ -64,43 +64,76 @@ public sealed class StringTable
     /// <summary>Removes all rows.</summary>
     public void Clear() => _rows.Clear();
 
-    /// <summary>Prints the table to the console with aligned columns and a header separator.</summary>
+    /// <summary>
+    /// Returns the table as an aligned plain-text string with box-drawing borders.
+    /// <code>
+    /// +---------+-----+--------+
+    /// | Name    | Age | City   |
+    /// +---------+-----+--------+
+    /// | Alice   | 30  | Boston |
+    /// +---------+-----+--------+
+    /// </code>
+    /// </summary>
     public string ToDisplayString()
     {
-        // Measure the widest value in each column (header or any cell).
-        int[] widths = new int[ColumnCount];
-        for (int c = 0; c < ColumnCount; c++)
-            widths[c] = _columnNames[c].Length;
+        int[] widths = MeasureColumnWidths();
+        string border = BuildBorder(widths, '+', '-');
+        string headerSep = border;
 
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine(border);
+        sb.AppendLine(BuildRow(_columnNames, widths));
+        sb.AppendLine(headerSep);
         foreach (string?[] row in _rows)
-            for (int c = 0; c < ColumnCount; c++)
-                widths[c] = Math.Max(widths[c], row[c]?.Length ?? 0);
-
-        // Build the separator line once (e.g. "+-------+-----+")
-        var sep = new System.Text.StringBuilder("+");
-        foreach (int w in widths)
-            sep.Append('-', w + 2).Append('+');
-        string separator = sep.ToString();
-
-        StringBuilder sb = new();
-
-        // Header
-        sb.AppendLine(separator);
-        sb.AppendLine(ToStringRow(_columnNames, widths));
-        sb.AppendLine(separator);
-
-        // Data rows
-        foreach (string?[] row in _rows)
-            sb.AppendLine(ToStringRow(row, widths));
-
-        sb.AppendLine(separator);
-
+            sb.AppendLine(BuildRow(row, widths));
+        sb.AppendLine(border);
         return sb.ToString();
     }
 
-    private static string ToStringRow(string?[] cells, int[] widths)
+    /// <summary>
+    /// Returns the table as a Markdown-formatted string.
+    /// <code>
+    /// | Name  | Age | City   |
+    /// |-------|-----|--------|
+    /// | Alice | 30  | Boston |
+    /// </code>
+    /// </summary>
+    public string ToMarkdownString()
     {
-        StringBuilder sb = new("|");
+        int[] widths = MeasureColumnWidths();
+        string headerSep = BuildBorder(widths, '|', '-');
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine(BuildRow(_columnNames, widths));
+        sb.AppendLine(headerSep);
+        foreach (string?[] row in _rows)
+            sb.AppendLine(BuildRow(row, widths));
+        return sb.ToString();
+    }
+
+    private int[] MeasureColumnWidths()
+    {
+        int[] widths = new int[ColumnCount];
+        for (int c = 0; c < ColumnCount; c++)
+            widths[c] = _columnNames[c].Length;
+        foreach (string?[] row in _rows)
+            for (int c = 0; c < ColumnCount; c++)
+                widths[c] = Math.Max(widths[c], row[c]?.Length ?? 0);
+        return widths;
+    }
+
+    private static string BuildBorder(int[] widths, char corner, char fill)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.Append(corner);
+        foreach (int w in widths)
+            sb.Append(fill, w + 2).Append(corner);
+        return sb.ToString();
+    }
+
+    private static string BuildRow(string?[] cells, int[] widths)
+    {
+        var sb = new System.Text.StringBuilder("|");
         for (int c = 0; c < cells.Length; c++)
             sb.Append(' ').Append((cells[c] ?? "").PadRight(widths[c])).Append(" |");
         return sb.ToString();

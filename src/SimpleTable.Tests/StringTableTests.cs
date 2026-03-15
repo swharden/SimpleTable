@@ -1,6 +1,6 @@
 ﻿namespace SimpleTable.Tests;
 
-public class Tests
+public class StringTableTests
 {
     [Test]
     public void Test1()
@@ -12,5 +12,6 @@ public class Tests
         table.AppendRow(["Ben", "ben@yahoo.com", "blue"]);
 
         Console.WriteLine(table.ToDisplayString());
+        Console.WriteLine(table.ToMarkdownString());
     }
 }
