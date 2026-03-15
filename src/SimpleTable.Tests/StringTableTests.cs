@@ -205,4 +205,32 @@ public class StringTableTests
         table.SetColumnNames(["test1", "test2"]);
         Assert.That(string.Join(",", table.ColumnNames), Is.EqualTo("test1,test2,Color"));
     }
+
+    [Test]
+    public void Test_StringTable_IterateRows()
+    {
+        StringTable table = SampleData.UsersTable();
+        foreach (var row in table.Rows)
+        {
+            Console.WriteLine(row);
+            foreach (var cell in row.Values)
+            {
+                Console.WriteLine($"  {cell}");
+            }
+        }
+    }
+
+    [Test]
+    public void Test_StringTable_IterateColumns()
+    {
+        StringTable table = SampleData.UsersTable();
+        foreach (var col in table.Columns)
+        {
+            Console.WriteLine(col);
+            foreach (var cell in col.Values)
+            {
+                Console.WriteLine($"  {cell}");
+            }
+        }
+    }
 }

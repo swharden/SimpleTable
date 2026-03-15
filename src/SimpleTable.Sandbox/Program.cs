@@ -2,11 +2,11 @@
 
 StringTable table = SampleData.UsersTable();
 
-foreach (var row in table.Rows)
+foreach (var col in table.Columns)
 {
-    Console.WriteLine(row);
-    foreach (var cell in row)
+    Console.WriteLine(col);
+    foreach(var cell in col)
     {
-        Console.WriteLine("  " + cell);
+        Console.WriteLine(cell);
     }
 }

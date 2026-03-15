@@ -47,6 +47,7 @@ public sealed class StringTable
     public string? GetValue(int row, string columnName) => this[row, columnName];
 
     public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList();
+    public List<TableColumn> Columns => Enumerable.Range(0, ColumnCount).Select(GetColumn).ToList();
 
     public TableRow GetRow(int rowIndex)
     {
@@ -54,6 +55,16 @@ public sealed class StringTable
         {
             RowIndex = rowIndex,
             Values = GetRowValues(rowIndex),
+        };
+    }
+
+    public TableColumn GetColumn(int columnIndex)
+    {
+        return new TableColumn()
+        {
+            ColumnIndex = columnIndex,
+            ColumnName = ColumnNamesList[columnIndex],
+            Values = GetColumnValues(columnIndex),
         };
     }
 

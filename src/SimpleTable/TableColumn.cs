@@ -2,12 +2,13 @@
 
 namespace SimpleTable;
 
-public struct TableRow : IEnumerable<string?>
+public struct TableColumn : IEnumerable<string?>
 {
-    public int RowIndex { get; set; }
+    public int ColumnIndex { get; set; }
+    public string ColumnName { get; set; }
     public List<string?> Values;
     public readonly string ValuesString => string.Join(", ", Values);
-    public override readonly string ToString() => $"Row {RowIndex} with {Values.Count} values";
+    public override readonly string ToString() => $"Column {ColumnName} with {Values.Count} values";
 
     public readonly IEnumerator<string?> GetEnumerator() => Values.GetEnumerator();
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
