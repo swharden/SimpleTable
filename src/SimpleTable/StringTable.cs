@@ -12,7 +12,7 @@ public sealed class StringTable
     private Dictionary<string, int> ColumnIndexesByName { get; }
     public int ColumnCount => ColumnNamesList.Count;
     public int RowCount => ValuesByRow.Count;
-    public IReadOnlyList<string> ColumnNames => ColumnNames;
+    public IReadOnlyList<string> ColumnNames => ColumnNamesList;
 
 
     public StringTable(params IEnumerable<string> columnNames)
@@ -166,12 +166,51 @@ public sealed class StringTable
 
     public void AddColumn(string columnName)
     {
-        int originalColumnCount = ColumnCount;
-
         ColumnNamesList.Add(columnName);
         for (int i = 0; i < RowCount; i++)
         {
-
+            ValuesByRow[i].Add(string.Empty);
         }
+    }
+
+    public void AddColumn(string columnName, IList<string> values)
+    {
+        ColumnNamesList.Add(columnName);
+
+        // pad existing rows with an empty cell
+        for (int i = 0; i < RowCount; i++)
+        {
+            ValuesByRow[i].Add(string.Empty);
+        }
+
+        // add more rows if the data is bigger than the existing table
+        while (RowCount < values.Count)
+        {
+            AddRow();
+        }
+
+        // populate cells with values passed in
+        int lastColumnIndex = ColumnCount - 1;
+        for (int i = 0; i < values.Count; i++)
+        {
+            ValuesByRow[i][lastColumnIndex] = values[i];
+        }
+    }
+
+    public void AddRow()
+    {
+        var emptyRow = Enumerable.Repeat(string.Empty, ColumnCount).ToList<string?>();
+        ValuesByRow.Add(emptyRow);
+    }
+
+    public string ToCsvString()
+    {
+        StringBuilder sb = new();
+        sb.AppendLine(string.Join(", ", ColumnNames));
+
+        foreach (var row in ValuesByRow)
+            sb.AppendLine(string.Join(", ", row));
+
+        return sb.ToString();
     }
 }

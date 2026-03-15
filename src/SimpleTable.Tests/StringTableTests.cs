@@ -61,9 +61,27 @@ public class StringTableTests
     }
 
     [Test]
-    public void Test_StringTable_AddRow()
+    public void Test_StringTable_AddColumn_Empty()
     {
         StringTable table = SampleData.UsersTable;
         table.AddColumn("Animal");
+        Console.WriteLine(table.ToDisplayString());
+    }
+
+    [Test]
+    public void Test_StringTable_AddColumn_Partial()
+    {
+        StringTable table = SampleData.UsersTable;
+        table.AddColumn("Animal", ["Dog", "Cat"]);
+        Console.WriteLine(table.ToDisplayString());
+    }
+
+    [Test]
+    public void Test_StringTable_AddColumn_Large()
+    {
+        string[] large = Enumerable.Range(0, 10).Select(x => $"TEST{x:00}").ToArray();
+        StringTable table = SampleData.UsersTable;
+        table.AddColumn("Animal", large);
+        Console.WriteLine(table.ToDisplayString());
     }
 }
