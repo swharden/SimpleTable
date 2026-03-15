@@ -6,5 +6,7 @@ Console.WriteLine(table1.ToDisplayString());
 StringTable table2 = SampleData.Consecutive(3, 4);
 Console.WriteLine(table2.ToDisplayString());
 
-table1.AddRows(table2);
-Console.WriteLine(table1.ToDisplayString());
+Console.WriteLine(string.Join(",", table1.GetValues(byRow: true)));
+Console.WriteLine(string.Join(",", table1.GetValues(byRow: false)));
+
+//Console.WriteLine(table1.ToDisplayString());

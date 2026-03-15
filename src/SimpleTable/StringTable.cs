@@ -59,6 +59,9 @@ public sealed class StringTable
 
     public string? GetValue(int row, int column) => this[row, column];
     public string? GetValue(int row, string columnName) => this[row, columnName];
+    public List<string?> GetValues(bool byRow = true) => byRow
+            ? Rows.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList()
+            : Columns.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList();
 
     public void SetValue(int row, int column, string value) => this[row, column] = value;
     public void SetValue(int row, string columnName, string value) => this[row, columnName] = value;
