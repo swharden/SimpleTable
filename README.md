@@ -4,16 +4,15 @@
 
 **SimpleTable is a lightweight library for working with tabular data in .NET applications.** It provides a simple API designed for quick adoption and easy integration into existing applications. SimpleTable has no external dependencies, simplifying security review and deployment. Its intentionally small API surface area makes the codebase easy to understand while still allowing developers to extend functionality without modifying the core library.
 
-<p></p>
-<p></p>
+<p align="center">
 <img src="dev/logo/simpletable.png" width="50%">
-<p></p>
-<p></p>
+</p>
 
 ## Quickstart
 
+### Create a table and add rows
+
 ```cs
-// Create a table and add rows
 StringTable table = new(["First", "Last", "Email"]);
 table.AddRow(["Scott", "Harden", "gmail"]);
 table.AddRow(["Bob", "Ross", "hotmail"]);
@@ -27,8 +26,9 @@ Console.WriteLine(table.ToMarkdownString());
 | Bob   | Ross   | hotmail |
 | Grace | Hopper | aol     |
 
+### Add columns and rows
+
 ```cs
-// Add columns and rows
 table.AddColumn("Pet", ["Fish", "Dog", "Cat"]);
 table.AddRow(["Bob", "Martin", "yahoo", "Bird"]);
 Console.WriteLine(table.ToMarkdownString());
@@ -41,8 +41,9 @@ Console.WriteLine(table.ToMarkdownString());
 | Grace | Hopper | aol     | Cat  |
 | Bob   | Martin | yahoo   | Bird |
 
+### Delete columns and rows
+
 ```cs
-// Delete columns and rows
 table.DeleteColumn("Pet");
 table.DeleteRow(table.LastRowIndex);
 Console.WriteLine(table.ToMarkdownString());
@@ -54,8 +55,9 @@ Console.WriteLine(table.ToMarkdownString());
 | Bob   | Ross   | hotmail |
 | Grace | Hopper | aol     |
 
+### Index cells individually to read or modify their values
+
 ```cs
-// Index cells individually to read or modify their values
 table[row: 1, col: 2] = "outlook";
 Console.WriteLine(table.ToMarkdownString());
 ```
@@ -66,8 +68,9 @@ Console.WriteLine(table.ToMarkdownString());
 | Bob   | Ross   | outlook |
 | Grace | Hopper | aol     |
 
+### Rotate table data
+
 ```cs
-// Rotate table data
 table.Rotate90();
 table.SetColumnNamesFromFirstRow();
 ```
@@ -77,8 +80,9 @@ table.SetColumnNamesFromFirstRow();
 | Hopper | Ross    | Harden |
 | aol    | outlook | gmail  |
 
+### Clear the table and repopulate it dynamically
+
 ```cs
-// Clear the table and repopulate it dynamically
 table.Clear();
 table.AddColumns(["Date", "Price", "Volume"]);
 Random rand = new(0);
@@ -103,8 +107,9 @@ Console.WriteLine(table.ToMarkdownString());
 | 3/19/2026 | $129.00 | 467,847,385 |
 | 3/20/2026 | $163.00 | 470,042,366 |
 
+### Export as CSV
+
 ```cs
-// Export as CSV
 Console.WriteLine(table.ToCsvString());
 ```
 
@@ -119,15 +124,17 @@ Date,Price,Volume
 3/20/2026,$163.00,"470,042,366"
 ```
 
+### Export as a HTML table and show it in the browser
+
 ```cs
-// Export as a HTML table and show it in the browser
 table.LaunchInDefaultBrowser();
 ```
 
 ![](/dev/screenshots/quickstart-browser-table.png)
 
+### Prepare a second table with sample data
+
 ```cs
-// Prepare a second table with sample data
 StringTable table2 = SampleData.Consecutive(4, 3);
 Console.WriteLine(table2.ToMarkdownString());
 ```
@@ -139,8 +146,9 @@ Console.WriteLine(table2.ToMarkdownString());
 | 7  | 8  | 9  |
 | 10 | 11 | 12 |
 
+### Combine two tables horizontally 
+
 ```cs
-// Combine two tables horizontally (jagged shapes are okay)
 table.AddColumns(table2);
 Console.WriteLine(table.ToMarkdownString());
 ```
