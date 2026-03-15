@@ -1,7 +1,8 @@
-﻿using System.Reflection.Emit;
-using System.Text;
+﻿using System.Text;
 
 namespace SimpleTable;
+
+// TODO: modify void methods to return 'this' to support fluent API
 
 /// <summary>
 /// A simple table that stores all cell values as strings.
@@ -261,7 +262,7 @@ public sealed class StringTable
         }
     }
 
-    public void AddColumn(string columnName, IList<string> values)
+    public void AddColumn(string columnName, IList<string?> values)
     {
         ColumnNamesList.Add(columnName);
 
@@ -283,6 +284,22 @@ public sealed class StringTable
         {
             ValuesByRow[i][lastColumnIndex] = values[i];
         }
+    }
+
+    public void AddColumn(TableColumn column)
+    {
+        AddColumn(column.ColumnName, column.Values);
+    }
+
+    public void AddColumns(IEnumerable<TableColumn> columns)
+    {
+        foreach (TableColumn column in columns)
+            AddColumn(column.ColumnName, column.Values);
+    }
+
+    public void AddColumns(StringTable table)
+    {
+        AddColumns(table.Columns);
     }
 
     public void AddRow()
