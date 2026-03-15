@@ -13,6 +13,7 @@ public sealed class StringTable
     public int ColumnCount => ColumnNamesList.Count;
     public int RowCount => ValuesByRow.Count;
     public IReadOnlyList<string> ColumnNames => ColumnNamesList;
+    public TableMetadata Metadata { get; set; } = new();
 
 
     public StringTable(params IEnumerable<string> columnNames)
@@ -41,7 +42,7 @@ public sealed class StringTable
 
     public override string ToString()
     {
-        return $"{nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
+        return $"{Metadata.Name} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
     }
 
     /// <summary>Returns the zero-based index of a named column.</summary>
