@@ -39,6 +39,11 @@ public sealed class StringTable
         set => this[row, IndexOf(columnName)] = value;
     }
 
+    public override string ToString()
+    {
+        return $"{nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
+    }
+
     /// <summary>Returns the zero-based index of a named column.</summary>
     /// <exception cref="KeyNotFoundException">Unknown column name.</exception>
     public int IndexOf(string columnName)
