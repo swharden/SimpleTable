@@ -2,7 +2,7 @@
 
 [![Build and Deploy](https://github.com/swharden/SimpleTable/actions/workflows/cicd.yml/badge.svg)](https://github.com/swharden/SimpleTable/actions/workflows/cicd.yml)
 
-**SimpleTable is a lightweight .NET library for working with tabular data in .NET Applications.** It provides a simple API designed for quick adoption and easy integration into existing applications. SimpleTable has no external dependencies, simplifying security review and deployment. Its intentionally small API surface area makes the codebase easy to understand while still allowing developers to extend functionality without modifying the core library.
+**SimpleTable is a lightweight library for working with tabular data in .NET applications.** It provides a simple API designed for quick adoption and easy integration into existing applications. SimpleTable has no external dependencies, simplifying security review and deployment. Its intentionally small API surface area makes the codebase easy to understand while still allowing developers to extend functionality without modifying the core library.
 
 <p></p>
 <p></p>
