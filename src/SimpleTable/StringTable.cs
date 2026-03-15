@@ -322,6 +322,22 @@ public sealed class StringTable
         }
     }
 
+    public void AddRow(TableRow column)
+    {
+        AddRow(column.Values);
+    }
+
+    public void AddRows(IEnumerable<TableRow> rows)
+    {
+        foreach (TableRow row in rows)
+            AddRow(row.Values);
+    }
+
+    public void AddRows(StringTable table)
+    {
+        AddRows(table.Rows);
+    }
+
     public string ToCsvString()
     {
         StringBuilder sb = new();
