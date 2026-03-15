@@ -2,14 +2,15 @@
 
 public class Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     [Test]
     public void Test1()
     {
-        Assert.Pass();
+        StringTable table = new(["Name", "Email", "Color"]);
+
+        table.AppendRow(["Scott", "scott@hotmail.com", "red"]);
+        table.AppendRow(["James", "james@gmail.com", "green"]);
+        table.AppendRow(["Ben", "ben@yahoo.com", "blue"]);
+
+        Console.WriteLine(table.ToDisplayString());
     }
 }
