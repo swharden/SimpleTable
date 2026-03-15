@@ -7,13 +7,14 @@
 		<Nullable>enable</Nullable>
 
 		<PackageId>SimpleTable</PackageId>
-		<Version>0.0.1</Version>
+		<Version>0.0.2</Version>
 		<Authors>Scott Harden</Authors>
 		<Company>Harden Technologies, LLC</Company>
 		<Description>Lightweight tabular data structures for .NET applications</Description>
 		<PackageTags>table;tabular;data;spreadsheet;csv</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>NuGetReadme.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/swharden/SimpleTable</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/swharden/SimpleTable</PackageProjectUrl>
 		<Deterministic>true</Deterministic>
@@ -31,6 +32,7 @@
 
 	<ItemGroup>
 		<None Include="NuGetReadme.md" Pack="true" PackagePath="\" />
+		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
