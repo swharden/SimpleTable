@@ -11,14 +11,14 @@ internal class ReadmeQuickstart
 
         // Create a table and add rows
         StringTable table = new(["First", "Last", "Email"]);
-        table.AddRow(["Scott", "Harden", "scott@gmail.com"]);
-        table.AddRow(["Bob", "Ross", "bob@hotmail.com"]);
-        table.AddRow(["Grace", "Hopper", "grace@aol.com"]);
+        table.AddRow(["Scott", "Harden", "gmail"]);
+        table.AddRow(["Bob", "Ross", "hotmail"]);
+        table.AddRow(["Grace", "Hopper", "aol"]);
         Console.WriteLine(table.ToMarkdownString());
 
         // Add columns and rows
         table.AddColumn("Pet", ["Fish", "Dog", "Cat"]);
-        table.AddRow(["Bob", "Martin", "solid@yahoo.com", "Bird"]);
+        table.AddRow(["Bob", "Martin", "yahoo", "Bird"]);
         Console.WriteLine(table.ToMarkdownString());
 
         // Delete columns and rows
@@ -28,12 +28,13 @@ internal class ReadmeQuickstart
 
         // Index cells individually to read or modify their values
         Console.WriteLine(table[row: 1, col: 2]);
-        table[row: 1, col: 2] = "bob@outlook.com";
+        table[row: 1, col: 2] = "outlook";
         Console.WriteLine(table.ToMarkdownString());
 
         // Rotate table data
         table.Rotate90();
         table.SetColumnNamesFromFirstRow();
+        Console.WriteLine(table.ToMarkdownString());
 
         // Clear the table and repopulate it dyncamically
         table.Clear();
@@ -55,5 +56,13 @@ internal class ReadmeQuickstart
         // Export as a HTML table and show it in the browser
         if (Debugger.IsAttached)
             table.LaunchInDefaultBrowser();
+
+        // Prepare a second table with sample data
+        StringTable table2 = SampleData.Consecutive(4, 3);
+        Console.WriteLine(table2.ToMarkdownString());
+
+        // Combine two tables horizontally (jagged shapes are okay)
+        table.AddColumns(table2);
+        Console.WriteLine(table.ToMarkdownString());
     }
 }
