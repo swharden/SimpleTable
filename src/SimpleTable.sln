@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AAA98CB-73C0-40FB-908B-B64F3681F1AD}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\cicd.yml = ..\.github\workflows\cicd.yml
+		SimpleTable\NuGetReadme.md = SimpleTable\NuGetReadme.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
