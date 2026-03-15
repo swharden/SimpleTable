@@ -43,6 +43,9 @@ public sealed class StringTable
         set => this[row, IndexOf(columnName)] = value;
     }
 
+    public string? GetValue(int row, int column) => this[row, column];
+    public string? GetValue(int row, string columnName) => this[row, columnName];
+
     public override string ToString()
     {
         return $"{Metadata.Name} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
