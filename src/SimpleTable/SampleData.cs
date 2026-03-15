@@ -11,4 +11,20 @@ public static class SampleData
         table.AppendRow(["Rob", "rob@aol.com", "gray"]);
         return table;
     }
+
+    public static StringTable Consecutive(int rowCount, int colCount, double initial = 1.0, double step = 1.0)
+    {
+        double value = initial;
+
+        StringTable table = new(rowCount, colCount);
+        foreach (var row in table.Rows)
+        {
+            foreach (var col in table.Columns)
+            {
+                table.SetValue(row.RowIndex, col.ColumnIndex, value.ToString());
+                value += step;
+            }
+        }
+        return table;
+    }
 }
