@@ -175,6 +175,28 @@ public sealed class StringTable
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Return an Excel style column name (A, B, C, ..., AA, AB, AC, ...)
+    /// </summary>
+    public static string DefaultColumnName(int columnIndex)
+    {
+        string columnName = "";
+
+        while (columnIndex > 0)
+        {
+            columnIndex--;
+            columnName = (char)('A' + (columnIndex % 26)) + columnName;
+            columnIndex /= 26;
+        }
+
+        return columnName;
+    }
+
+    public void AddColumn()
+    {
+        AddColumn(DefaultColumnName(ColumnCount + 1));
+    }
+
     public void AddColumn(string columnName)
     {
         ColumnNamesList.Add(columnName);
@@ -210,8 +232,22 @@ public sealed class StringTable
 
     public void AddRow()
     {
-        var emptyRow = Enumerable.Repeat(string.Empty, ColumnCount).ToList<string?>();
+        var emptyRow = Enumerable.Repeat<string?>(null, ColumnCount).ToList();
         ValuesByRow.Add(emptyRow);
+    }
+
+    public void AddRow(IList<string?> values)
+    {
+        while (ColumnCount < values.Count)
+            AddColumn();
+
+        AddRow();
+
+        int lastRowIndex = RowCount - 1;
+        for (int i = 0; i < values.Count; i++)
+        {
+            this[lastRowIndex, i] = values[i];
+        }
     }
 
     public string ToCsvString()
