@@ -15,33 +15,31 @@
 ```cs
 // Create a table and add rows
 StringTable table = new(["First", "Last", "Email"]);
-table.AddRow(["Scott", "Harden", "scott@gmail.com"]);
-table.AddRow(["Bob", "Ross", "bob@hotmail.com"]);
-table.AddRow(["Grace", "Hopper", "grace@aol.com"]);
+table.AddRow(["Scott", "Harden", "gmail"]);
+table.AddRow(["Bob", "Ross", "hotmail"]);
+table.AddRow(["Grace", "Hopper", "aol"]);
 Console.WriteLine(table.ToMarkdownString());
 ```
 
-| First | Last   | Email           |
-|-------|--------|-----------------|
-| Scott | Harden | scott@gmail.com |
-| Bob   | Ross   | bob@hotmail.com |
-| Grace | Hopper | grace@aol.com   |
+| First | Last   | Email   |
+|-------|--------|---------|
+| Scott | Harden | gmail   |
+| Bob   | Ross   | hotmail |
+| Grace | Hopper | aol     |
 
 ```cs
 // Add columns and rows
 table.AddColumn("Pet", ["Fish", "Dog", "Cat"]);
-table.AddRow(["Bob", "Martin", "solid@yahoo.com", "Bird"]);
+table.AddRow(["Bob", "Martin", "yahoo", "Bird"]);
 Console.WriteLine(table.ToMarkdownString());
 ```
 
-```cs
-| First | Last   | Email           | Pet  |
-|-------|--------|-----------------|------|
-| Scott | Harden | scott@gmail.com | Fish |
-| Bob   | Ross   | bob@hotmail.com | Dog  |
-| Grace | Hopper | grace@aol.com   | Cat  |
-| Bob   | Martin | solid@yahoo.com | Bird |
-```
+| First | Last   | Email   | Pet  |
+|-------|--------|---------|------|
+| Scott | Harden | gmail   | Fish |
+| Bob   | Ross   | hotmail | Dog  |
+| Grace | Hopper | aol     | Cat  |
+| Bob   | Martin | yahoo   | Bird |
 
 ```cs
 // Delete columns and rows
@@ -50,24 +48,23 @@ table.DeleteRow(table.LastRowIndex);
 Console.WriteLine(table.ToMarkdownString());
 ```
 
-| First | Last   | Email           |
-|-------|--------|-----------------|
-| Scott | Harden | scott@gmail.com |
-| Bob   | Ross   | bob@hotmail.com |
-| Grace | Hopper | grace@aol.com   |
+| First | Last   | Email   |
+|-------|--------|---------|
+| Scott | Harden | gmail   |
+| Bob   | Ross   | hotmail |
+| Grace | Hopper | aol     |
 
 ```cs
 // Index cells individually to read or modify their values
-table[row: 1, col: 2] = "bob@outlook.com";
+table[row: 1, col: 2] = "outlook";
 Console.WriteLine(table.ToMarkdownString());
 ```
 
-bob@hotmail.com
-| First | Last   | Email           |
-|-------|--------|-----------------|
-| Scott | Harden | scott@gmail.com |
-| Bob   | Ross   | bob@outlook.com |
-| Grace | Hopper | grace@aol.com   |
+| First | Last   | Email   |
+|-------|--------|---------|
+| Scott | Harden | gmail   |
+| Bob   | Ross   | outlook |
+| Grace | Hopper | aol     |
 
 ```cs
 // Rotate table data
@@ -75,11 +72,10 @@ table.Rotate90();
 table.SetColumnNamesFromFirstRow();
 ```
 
-| First | Last   | Email           |
-|-------|--------|-----------------|
-| Scott | Harden | scott@gmail.com |
-| Bob   | Ross   | bob@outlook.com |
-| Grace | Hopper | grace@aol.com   |
+| Grace  | Bob     | Scott  |
+|--------|---------|--------|
+| Hopper | Ross    | Harden |
+| aol    | outlook | gmail  |
 
 ```cs
 // Clear the table and repopulate it dynamically
@@ -129,3 +125,31 @@ table.LaunchInDefaultBrowser();
 ```
 
 ![](/dev/screenshots/quickstart-browser-table.png)
+
+```cs
+// Prepare a second table with sample data
+StringTable table2 = SampleData.Consecutive(4, 3);
+Console.WriteLine(table2.ToMarkdownString());
+```
+
+| A  | B  | C  |
+|----|----|----|
+| 1  | 2  | 3  |
+| 4  | 5  | 6  |
+| 7  | 8  | 9  |
+| 10 | 11 | 12 |
+
+```cs
+// Combine two tables horizontally (jagged shapes are okay)
+table.AddColumns(table2);
+Console.WriteLine(table.ToMarkdownString());
+```
+| Date      | Price   | Volume      | A  | B  | C  |
+|-----------|---------|-------------|----|----|----|
+| 3/14/2026 | $172.00 | 817,508,034 | 1  | 2  | 3  |
+| 3/15/2026 | $176.00 | 558,603,030 | 4  | 5  | 6  |
+| 3/16/2026 | $120.00 | 559,325,909 | 7  | 8  | 9  |
+| 3/17/2026 | $190.00 | 442,735,695 | 10 | 11 | 12 |
+| 3/18/2026 | $197.00 | 274,430,753 | -- | -- | -- |
+| 3/19/2026 | $129.00 | 467,847,385 | -- | -- | -- |
+| 3/20/2026 | $163.00 | 470,042,366 | -- | -- | -- |
