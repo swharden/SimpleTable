@@ -140,14 +140,14 @@ public sealed class StringTable
         return sb.ToString();
     }
 
-    private static string BuildCellsRow(List<string?> cells, int[] widths)
+    private static string BuildCellsRow(List<string?> cells, int[] widths, string nullValue = "--")
     {
         StringBuilder sb = new("|");
 
         for (int c = 0; c < cells.Count; c++)
         {
             sb.Append(' ')
-                .Append((cells[c] ?? string.Empty)
+                .Append((cells[c] ?? nullValue)
                 .PadRight(widths[c]))
                 .Append(" |");
         }
