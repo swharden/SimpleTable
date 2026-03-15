@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11527.330 d18.3
+VisualStudioVersion = 18.3.11527.330
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTable", "SimpleTable\SimpleTable.csproj", "{B5CCF08D-800F-1679-7A3D-C0981641253E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTable.Tests", "SimpleTable.Tests\SimpleTable.Tests.csproj", "{254C521E-A942-BB7C-A52C-C566076EB583}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleTable.Sandbox", "SimpleTable.Sandbox\SimpleTable.Sandbox.csproj", "{DE3CB185-8E9B-7697-6762-927FE6861509}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{254C521E-A942-BB7C-A52C-C566076EB583}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254C521E-A942-BB7C-A52C-C566076EB583}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254C521E-A942-BB7C-A52C-C566076EB583}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE3CB185-8E9B-7697-6762-927FE6861509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE3CB185-8E9B-7697-6762-927FE6861509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE3CB185-8E9B-7697-6762-927FE6861509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE3CB185-8E9B-7697-6762-927FE6861509}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
