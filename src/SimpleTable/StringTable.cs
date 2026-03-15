@@ -154,6 +154,21 @@ public sealed class StringTable
         return sb.ToString();
     }
 
+    private static string EscapeCsvField(string? value)
+    {
+        if (value is null)
+            return string.Empty;
+
+        // Escape double quotes by doubling them
+        string escaped = value.Replace("\"", "\"\"");
+
+        // If the field contains a comma, quote, CR or LF then wrap in double quotes
+        if (escaped.IndexOfAny([',', '"', '\r', '\n']) >= 0)
+            return '"' + escaped + '"';
+
+        return escaped;
+    }
+
     /// <summary>
     /// Returns the table as a Markdown-formatted string.
     /// <code>
@@ -175,6 +190,35 @@ public sealed class StringTable
         sb.AppendLine(headerSep);
         foreach (var row in ValuesByRow)
             sb.AppendLine(BuildCellsRow(row, widths));
+        return sb.ToString();
+    }
+
+    public string ToCsvString()
+    {
+        var sb = new StringBuilder();
+
+        // Prefix with a UTF-8 BOM so Excel on Windows will usually detect UTF-8 encoding.
+        sb.Append('\uFEFF');
+
+        for (int c = 0; c < ColumnCount; c++)
+        {
+            if (c > 0)
+                sb.Append(',');
+            sb.Append(EscapeCsvField(ColumnNamesList[c]));
+        }
+        sb.Append("\r\n");
+
+        foreach (TableRow row in Rows)
+        {
+            for (int c = 0; c < row.Values.Count; c++)
+            {
+                if (c > 0)
+                    sb.Append(',');
+                sb.Append(EscapeCsvField(row.Values[c]));
+            }
+            sb.Append("\r\n");
+        }
+
         return sb.ToString();
     }
 
@@ -260,7 +304,7 @@ public sealed class StringTable
 
         for (int i = 0; i < RowCount; i++)
         {
-            ValuesByRow[i].Add(string.Empty);
+            ValuesByRow[i].Add(null);
         }
     }
 
@@ -306,6 +350,12 @@ public sealed class StringTable
     public void AddColumn(TableColumn column)
     {
         AddColumn(column.ColumnName, column.Values);
+    }
+
+    public void AddColumns(IEnumerable<string> columnNames)
+    {
+        foreach (string columnName in columnNames)
+            AddColumn(columnName);
     }
 
     public void AddColumns(IEnumerable<TableColumn> columns)
@@ -355,17 +405,6 @@ public sealed class StringTable
         AddRows(table.Rows);
     }
 
-    public string ToCsvString()
-    {
-        StringBuilder sb = new();
-        sb.AppendLine(string.Join(", ", ColumnNames));
-
-        foreach (var row in ValuesByRow)
-            sb.AppendLine(string.Join(", ", row));
-
-        return sb.ToString();
-    }
-
     public List<string?> GetColumnValues(string columnName)
     {
         int columnIndex = ColumnIndexesByName[columnName];
@@ -390,13 +429,13 @@ public sealed class StringTable
         ColumnIndexesByName[name] = index;
     }
 
-    public void SetColumnNames(string[] names)
+    public void SetColumnNames(IList<string?> names)
     {
-        while (ColumnCount < names.Length)
+        while (ColumnCount < names.Count)
             AddColumn();
 
-        for (int i = 0; i < names.Length; i++)
-            SetColumnName(i, names[i]);
+        for (int i = 0; i < names.Count; i++)
+            SetColumnName(i, names[i] ?? DefaultColumnName(i));
     }
 
     public void LaunchInDefaultBrowser(string? saveAs = null)
@@ -456,5 +495,11 @@ public sealed class StringTable
 
         foreach (var row in ValuesByRow)
             row.RemoveAt(columnIndex);
+    }
+
+    public void SetColumnNamesFromFirstRow()
+    {
+        SetColumnNames(GetRow(0).Values);
+        DeleteRow(0);
     }
 }
