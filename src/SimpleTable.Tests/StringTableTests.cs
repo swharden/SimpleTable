@@ -24,7 +24,7 @@ public class StringTableTests
     [Test]
     public void Test_StringTable_Index()
     {
-        StringTable table = SampleData.UsersTable;
+        StringTable table = SampleData.UsersTable();
 
         table[1, 2] = "HELLO"; // [row index, column index]
         table[0, "Email"] = "WORLD"; // [row index, column name]
@@ -49,7 +49,7 @@ public class StringTableTests
     [Test]
     public void Test_StringTable_Construct_Clear()
     {
-        StringTable table = SampleData.UsersTable;
+        StringTable table = SampleData.UsersTable();
         table.Clear();
         Console.WriteLine(table.ToDisplayString());
 
@@ -63,7 +63,7 @@ public class StringTableTests
     [Test]
     public void Test_StringTable_AddColumn_Empty()
     {
-        StringTable table = SampleData.UsersTable;
+        StringTable table = SampleData.UsersTable();
         table.AddColumn("Animal");
         Console.WriteLine(table.ToDisplayString());
     }
@@ -71,7 +71,7 @@ public class StringTableTests
     [Test]
     public void Test_StringTable_AddColumn_Partial()
     {
-        StringTable table = SampleData.UsersTable;
+        StringTable table = SampleData.UsersTable();
         table.AddColumn("Animal", ["Dog", "Cat"]);
         Console.WriteLine(table.ToDisplayString());
     }
@@ -80,7 +80,7 @@ public class StringTableTests
     public void Test_StringTable_AddColumn_Large()
     {
         string[] large = Enumerable.Range(0, 10).Select(x => $"TEST{x:00}").ToArray();
-        StringTable table = SampleData.UsersTable;
+        StringTable table = SampleData.UsersTable();
         table.AddColumn("Animal", large);
         Console.WriteLine(table.ToDisplayString());
     }
