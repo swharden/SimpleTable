@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="737.96863"
+   height="255.99998"
+   viewBox="0 0 195.25419 67.733331"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="simpletable.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   inkscape:export-filename="simple-table"
+   inkscape:export-xdpi="136.15353"
+   inkscape:export-ydpi="136.15353"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.4702523"
+     inkscape:cx="428.15781"
+     inkscape:cy="114.94626"
+     inkscape:window-width="2110"
+     inkscape:window-height="1328"
+     inkscape:window-x="3865"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g64"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g64"
+       transform="matrix(0.54343829,0,0,0.54343829,-2.4577186,-2.9422189)">
+      <path
+         id="rect1-8"
+         style="fill:#7e8394;stroke-width:15.7017;stroke-linecap:round;stroke-linejoin:round"
+         d="m 13.079822,50.350415 v 34.765837 h 33.40778 V 50.350415 Z m 75.899243,0 V 85.116252 H 122.38684 V 50.350415 Z m -75.899243,38.62865 v 25.227915 c 0,4.61639 3.563472,8.17986 8.179862,8.17986 H 46.487602 V 88.979065 Z m 37.270593,0 V 122.38684 H 85.116252 V 88.979065 Z m 38.62865,0 v 33.407775 h 25.227915 c 4.61639,0 8.17986,-3.56347 8.17986,-8.17986 V 88.979065 Z"
+         sodipodi:nodetypes="cccccccccccssccccccccccsscc" />
+      <path
+         id="rect1-7"
+         style="fill:#7b44b8;stroke-width:15.7017;stroke-linecap:round;stroke-linejoin:round"
+         d="M 50.35051,50.350515 H 85.11613 V 85.116137 H 50.35051 Z" />
+      <path
+         id="rect1-8-2"
+         style="fill:#414758;fill-opacity:1;stroke-width:15.7017;stroke-linecap:round;stroke-linejoin:round"
+         d="m 21.259684,13.079822 c -4.616393,0 -8.179862,3.56347 -8.179862,8.179862 v 25.227918 h 33.40778 v -33.40778 z m 29.090731,0 v 33.40778 h 34.765836 v -33.40778 z m 38.628646,0 v 33.40778 H 122.38684 V 21.259684 c 0,-4.616394 -3.56347,-8.179862 -8.17986,-8.179862 z"
+         sodipodi:nodetypes="sscccsccccccccssc" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-weight:900;font-size:35.7407px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Heavy';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#414758;fill-opacity:1;stroke:#ffffff;stroke-width:23.3799;stroke-linecap:round;stroke-linejoin:round"
+       x="66.896217"
+       y="29.61018"
+       id="text1-8"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#414758;fill-opacity:1;stroke:none;stroke-width:23.3799"
+         x="66.896217"
+         y="29.61018"
+         id="tspan2-2">SIMPLE</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:900;font-size:42.73px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Heavy';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#7b44b8;fill-opacity:1;stroke:#ffffff;stroke-width:27.9518;stroke-linecap:round;stroke-linejoin:round"
+       x="68.501762"
+       y="63.567474"
+       id="text1-8-1"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#7b44b8;fill-opacity:1;stroke:none;stroke-width:27.9518"
+         x="68.501762"
+         y="63.567474"
+         id="tspan2-2-7">TABLE</tspan></text>
+  </g>
+</svg>
