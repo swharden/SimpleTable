@@ -330,7 +330,7 @@ public sealed class StringTable
         // pad existing rows with an empty cell
         for (int i = 0; i < RowCount; i++)
         {
-            ValuesByRow[i].Add(string.Empty);
+            ValuesByRow[i].Add(null);
         }
 
         // add more rows if the data is bigger than the existing table

@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 
 		<PackageId>SimpleTable</PackageId>
-		<Version>0.0.4</Version>
+		<Version>0.0.5</Version>
 		<Authors>Scott Harden</Authors>
 		<Company>Harden Technologies, LLC</Company>
 		<Description>Lightweight tabular data structures for .NET applications</Description>
