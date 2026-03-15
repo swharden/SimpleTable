@@ -1,0 +1,44 @@
+name: Publish to NuGet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # required for Source Link
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore src/SimpleTable/SimpleTable.csproj
+
+      - name: Build
+        run: dotnet build src/SimpleTable/SimpleTable.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+        continue-on-error: false
+
+      - name: Pack
+        run: dotnet pack src/SimpleTable/SimpleTable.csproj --configuration Release --no-build --output ./artifacts
+
+      - name: Push to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+          dotnet nuget push ./artifacts/*.snupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
