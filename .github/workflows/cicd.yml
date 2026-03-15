@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore
-        run: dotnet restore src/SimpleTable/SimpleTable.csproj
+        run: dotnet restore src
 
       - name: Build
-        run: dotnet build src/SimpleTable/SimpleTable.csproj --configuration Release --no-restore
+        run: dotnet build src --configuration Release --no-restore
 
       - name: Test
         run: dotnet test --configuration Release --no-build
