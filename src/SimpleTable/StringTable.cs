@@ -20,6 +20,18 @@ public sealed class StringTable
     public int LastRowIndex => RowCount - 1;
     public int LastColumnIndex => ColumnCount - 1;
 
+    public StringTable(int rowCount, int columnCount)
+    {
+        ColumnNamesList = [];
+        ColumnIndexesByName = new Dictionary<string, int>(ColumnNamesList.Count, StringComparer.Ordinal);
+
+        while (ColumnCount < columnCount)
+            AddColumn();
+
+        while (RowCount < rowCount)
+            AddRow();
+    }
+
     public StringTable(params IEnumerable<string> columnNames)
     {
         ColumnNamesList = columnNames.ToList();
@@ -46,6 +58,9 @@ public sealed class StringTable
 
     public string? GetValue(int row, int column) => this[row, column];
     public string? GetValue(int row, string columnName) => this[row, columnName];
+
+    public void SetValue(int row, int column, string value) => this[row, column] = value;
+    public void SetValue(int row, string columnName, string value) => this[row, columnName] = value;
 
     public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList();
     public List<TableColumn> Columns => Enumerable.Range(0, ColumnCount).Select(GetColumn).ToList();
