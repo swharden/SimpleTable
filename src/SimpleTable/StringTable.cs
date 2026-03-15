@@ -16,6 +16,9 @@ public sealed class StringTable
     public TableMetadata Metadata { get; set; } = new();
     public TableDimensions Dimensions => new(RowCount, ColumnCount);
 
+    public int LastRowIndex => RowCount - 1;
+    public int LastColumnIndex => ColumnCount - 1;
+
     public StringTable(params IEnumerable<string> columnNames)
     {
         ColumnNamesList = columnNames.ToList();
@@ -192,17 +195,28 @@ public sealed class StringTable
         return columnName;
     }
 
-    public void AddColumn()
+    public void AddColumn(string? columnName = null)
     {
-        AddColumn(DefaultColumnName(ColumnCount + 1));
-    }
+        columnName ??= DefaultColumnName(ColumnCount + 1);
 
-    public void AddColumn(string columnName)
-    {
         ColumnNamesList.Add(columnName);
+
         for (int i = 0; i < RowCount; i++)
         {
             ValuesByRow[i].Add(string.Empty);
+        }
+    }
+
+    public void AddColumn(IList<string?> values, string? columnName = null)
+    {
+        AddColumn(columnName);
+
+        while (RowCount < values.Count)
+            AddRow();
+
+        for (int i = 0; i < values.Count; i++)
+        {
+            this[i, LastColumnIndex] = values[i];
         }
     }
 
