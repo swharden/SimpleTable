@@ -13,9 +13,6 @@ public sealed class StringTable
 
     public StringTable(params string[] columnNames)
     {
-        if (columnNames.Length == 0)
-            throw new ArgumentException("At least one column name is required.", nameof(columnNames));
-
         _columnNames = (string[])columnNames.Clone();
         _columnIndex = new Dictionary<string, int>(columnNames.Length, StringComparer.Ordinal);
 
@@ -76,6 +73,9 @@ public sealed class StringTable
     /// </summary>
     public string ToDisplayString()
     {
+        if (ColumnCount == 0)
+            return string.Empty;
+
         int[] widths = MeasureColumnWidths();
         string border = BuildBorder(widths, '+', '-');
         string headerSep = border;
@@ -100,6 +100,9 @@ public sealed class StringTable
     /// </summary>
     public string ToMarkdownString()
     {
+        if (ColumnCount == 0)
+            return string.Empty;
+
         int[] widths = MeasureColumnWidths();
         string headerSep = BuildBorder(widths, '|', '-');
 
