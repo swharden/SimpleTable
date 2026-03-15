@@ -290,4 +290,21 @@ public sealed class StringTable
     {
         return Enumerable.Range(0, ColumnCount).Select(x => this[rowIndex, x]).ToList();
     }
+
+    public void SetColumnName(int index, string name)
+    {
+        string oldName = ColumnNamesList[index];
+        ColumnNamesList[index] = name;
+        ColumnIndexesByName.Remove(oldName);
+        ColumnIndexesByName[name] = index;
+    }
+
+    public void SetColumnNames(string[] names)
+    {
+        while (ColumnCount < names.Length)
+            AddColumn();
+
+        for (int i = 0; i < names.Length; i++)
+            SetColumnName(i, names[i]);
+    }
 }

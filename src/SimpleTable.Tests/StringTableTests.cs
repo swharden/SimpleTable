@@ -197,4 +197,12 @@ public class StringTableTests
             actual: string.Join(",", table.GetRowValues(1)),
             expression: Is.EqualTo("James,james@gmail.com,green"));
     }
+
+    [Test]
+    public void Test_StringTable_SetColumnNames()
+    {
+        StringTable table = SampleData.UsersTable();
+        table.SetColumnNames(["test1", "test2"]);
+        Assert.That(string.Join(",", table.ColumnNames), Is.EqualTo("test1,test2,Color"));
+    }
 }
