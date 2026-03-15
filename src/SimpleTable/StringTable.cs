@@ -63,8 +63,9 @@ public sealed class StringTable
             ? Rows.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList()
             : Columns.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList();
 
-    public void SetValue(int row, int column, string value) => this[row, column] = value;
-    public void SetValue(int row, string columnName, string value) => this[row, columnName] = value;
+    public void SetValue(TableRow row, TableColumn column, string? value) => this[row.RowIndex, column.ColumnIndex] = value;
+    public void SetValue(int row, int column, string? value) => this[row, column] = value;
+    public void SetValue(int row, string columnName, string? value) => this[row, columnName] = value;
 
     public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList();
     public List<TableColumn> Columns => Enumerable.Range(0, ColumnCount).Select(GetColumn).ToList();
@@ -112,8 +113,17 @@ public sealed class StringTable
         ValuesByRow.Add(values.ToList());
     }
 
-    /// <summary>Removes all rows.</summary>
-    public void Clear() => ValuesByRow.Clear();
+    public void ClearRows()
+    {
+        ValuesByRow.Clear();
+    }
+
+    public void Clear()
+    {
+        ValuesByRow.Clear();
+        ColumnNamesList.Clear();
+        ColumnIndexesByName.Clear();
+    }
 
     /// <summary>
     /// Returns the table as an aligned plain-text string with box-drawing borders.
@@ -394,5 +404,29 @@ public sealed class StringTable
         string html2 = Exporters.Html.WrapInHtml(html);
         File.WriteAllText(saveAs, html2);
         Launch.DefaultBrowser(saveAs);
+    }
+
+    public void Rotate90()
+    {
+        // NOTE: since we don't have row names, column names become lost
+        //List<string> columnNames = ColumnNames.ToList();
+
+        List<string?> values = GetValues();
+        int initialRowCount = RowCount;
+        int initialColumnCount = ColumnCount;
+        int newRowCount = ColumnCount;
+        int newColumnCount = RowCount;
+
+        Clear();
+
+        while (ColumnCount < newColumnCount)
+            AddColumn();
+
+        while (RowCount < newRowCount)
+            AddRow();
+
+        for (int r = 0; r < newRowCount; r++)
+            for (int c = 0; c < newColumnCount; c++)
+                this[r, c] = values[(initialRowCount - 1 - c) * initialColumnCount + r];
     }
 }
