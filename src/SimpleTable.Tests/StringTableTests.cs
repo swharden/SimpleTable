@@ -59,4 +59,11 @@ public class StringTableTests
             Assert.That(table.RowCount, Is.EqualTo(0));
         }
     }
+
+    [Test]
+    public void Test_StringTable_AddRow()
+    {
+        StringTable table = SampleData.UsersTable;
+        table.AddColumn();
+    }
 }

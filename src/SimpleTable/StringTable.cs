@@ -7,30 +7,30 @@ namespace SimpleTable;
 /// </summary>
 public sealed class StringTable
 {
-    private readonly List<string?[]> _rows = [];
-    private readonly string[] _columnNames;
-    private readonly Dictionary<string, int> _columnIndex;
+    private List<string?[]> Rows { get; } = [];
+    private List<string> ColumnNamesList { get; }
+    private Dictionary<string, int> ColumnIndexesByName { get; }
+    public int ColumnCount => ColumnNamesList.Count;
+    public int RowCount => Rows.Count;
+    public IReadOnlyList<string> ColumnNames => ColumnNames;
 
-    public StringTable(params string[] columnNames)
+
+    public StringTable(params IEnumerable<string> columnNames)
     {
-        _columnNames = (string[])columnNames.Clone();
-        _columnIndex = new Dictionary<string, int>(columnNames.Length, StringComparer.Ordinal);
+        ColumnNamesList = columnNames.ToList();
+        ColumnIndexesByName = new Dictionary<string, int>(ColumnNamesList.Count, StringComparer.Ordinal);
 
-        for (int i = 0; i < columnNames.Length; i++)
+        for (int i = 0; i < ColumnNamesList.Count; i++)
         {
-            if (!_columnIndex.TryAdd(columnNames[i], i))
-                throw new ArgumentException($"Duplicate column name '{columnNames[i]}'.", nameof(columnNames));
+            if (!ColumnIndexesByName.TryAdd(ColumnNamesList[i], i))
+                throw new ArgumentException($"Duplicate column name '{ColumnNamesList[i]}'.", nameof(columnNames));
         }
     }
 
-    public int ColumnCount => _columnNames.Length;
-    public int RowCount => _rows.Count;
-    public IReadOnlyList<string> ColumnNames => _columnNames;
-
     public string? this[int row, int col]
     {
-        get => _rows[row][col];
-        set => _rows[row][col] = value;
+        get => Rows[row][col];
+        set => Rows[row][col] = value;
     }
 
     public string? this[int row, string columnName]
@@ -43,7 +43,7 @@ public sealed class StringTable
     /// <exception cref="KeyNotFoundException">Unknown column name.</exception>
     public int IndexOf(string columnName)
     {
-        if (!_columnIndex.TryGetValue(columnName, out int idx))
+        if (!ColumnIndexesByName.TryGetValue(columnName, out int idx))
             throw new KeyNotFoundException($"No column named '{columnName}'.");
         return idx;
     }
@@ -51,15 +51,20 @@ public sealed class StringTable
     /// <summary>Appends a row. Must supply exactly <see cref="ColumnCount"/> values.</summary>
     public void AppendRow(params string?[] values)
     {
-        if (values.Length != _columnNames.Length)
+        if (values.Length != ColumnNamesList.Count)
             throw new ArgumentException(
-                $"Expected {_columnNames.Length} values, got {values.Length}.", nameof(values));
+                $"Expected {ColumnNamesList.Count} values, got {values.Length}.", nameof(values));
 
-        _rows.Add((string?[])values.Clone());
+        Rows.Add((string?[])values.Clone());
+    }
+
+    public void AddColumn()
+    {
+
     }
 
     /// <summary>Removes all rows.</summary>
-    public void Clear() => _rows.Clear();
+    public void Clear() => Rows.Clear();
 
     /// <summary>
     /// Returns the table as an aligned plain-text string with box-drawing borders.
@@ -82,10 +87,10 @@ public sealed class StringTable
 
         var sb = new System.Text.StringBuilder();
         sb.AppendLine(border);
-        sb.AppendLine(BuildRow(_columnNames, widths));
+        sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
         sb.AppendLine(headerSep);
-        foreach (string?[] row in _rows)
-            sb.AppendLine(BuildRow(row, widths));
+        foreach (string?[] row in Rows)
+            sb.AppendLine(BuildCellsRow(row, widths));
         sb.AppendLine(border);
         return sb.ToString();
     }
@@ -107,10 +112,10 @@ public sealed class StringTable
         string headerSep = BuildBorder(widths, '|', '-');
 
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine(BuildRow(_columnNames, widths));
+        sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
         sb.AppendLine(headerSep);
-        foreach (string?[] row in _rows)
-            sb.AppendLine(BuildRow(row, widths));
+        foreach (string?[] row in Rows)
+            sb.AppendLine(BuildCellsRow(row, widths));
         return sb.ToString();
     }
 
@@ -118,8 +123,8 @@ public sealed class StringTable
     {
         int[] widths = new int[ColumnCount];
         for (int c = 0; c < ColumnCount; c++)
-            widths[c] = _columnNames[c].Length;
-        foreach (string?[] row in _rows)
+            widths[c] = ColumnNamesList[c].Length;
+        foreach (string?[] row in Rows)
             for (int c = 0; c < ColumnCount; c++)
                 widths[c] = Math.Max(widths[c], row[c]?.Length ?? 0);
         return widths;
@@ -134,11 +139,33 @@ public sealed class StringTable
         return sb.ToString();
     }
 
-    private static string BuildRow(string?[] cells, int[] widths)
+    private static string BuildCellsRow(string?[] cells, int[] widths)
     {
-        var sb = new System.Text.StringBuilder("|");
+        StringBuilder sb = new("|");
+
         for (int c = 0; c < cells.Length; c++)
-            sb.Append(' ').Append((cells[c] ?? "").PadRight(widths[c])).Append(" |");
+        {
+            sb.Append(' ')
+                .Append((cells[c] ?? string.Empty)
+                .PadRight(widths[c]))
+                .Append(" |");
+        }
+
+        return sb.ToString();
+    }
+
+    private static string BuildColumnNameRow(List<string> columnNames, int[] widths)
+    {
+        StringBuilder sb = new("|");
+
+        for (int c = 0; c < columnNames.Count; c++)
+        {
+            sb.Append(' ')
+                .Append((columnNames[c] ?? string.Empty)
+                .PadRight(widths[c]))
+                .Append(" |");
+        }
+
         return sb.ToString();
     }
 }
