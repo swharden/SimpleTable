@@ -161,3 +161,28 @@ Console.WriteLine(table.ToMarkdownString());
 | 3/18/2026 | $197.00 | 274,430,753 | -- | -- | -- |
 | 3/19/2026 | $129.00 | 467,847,385 | -- | -- | -- |
 | 3/20/2026 | $163.00 | 470,042,366 | -- | -- | -- |
+
+### Work with tables using a Fluent API
+
+```cs
+StringTable table = new StringTable()
+    .AddColumn("Package")
+    .AddColumn("Version")
+    .AddColumn("Downloads")
+    .AddRow(["ScottPlot", "5.1.57", "3,989,229"])
+    .AddRow(["FftSharp", "2.2.0", "240,663"])
+    .AddRow(["Spectrogram", "2.0.0", "35,978"])
+    .AddRow(["AbfSharp", "0.7.3", "6,850"])
+    .AddRow(["FtdiSharp", "0.2.1", "2,780"])
+    .SetValue(0, "Version", "5.x")
+    .DeleteRow(4);
+
+Console.WriteLine(table.ToMarkdownString());
+```
+
+| Package     | Version | Downloads |
+|-------------|---------|-----------|
+| ScottPlot   | 5.x     | 3,989,229 |
+| FftSharp    | 2.2.0   | 240,663   |
+| Spectrogram | 2.0.0   | 35,978    |
+| AbfSharp    | 0.7.3   | 6,850     |

@@ -65,5 +65,19 @@ internal class ReadmeQuickstart
         // Combine two tables horizontally (jagged shapes are okay)
         table.AddColumns(table2);
         Console.WriteLine(table.ToMarkdownString());
+
+        // Methods can be chained to work with tables using a fluent API
+        StringTable table3 = new StringTable()
+            .AddColumn("Package")
+            .AddColumn("Version")
+            .AddColumn("Downloads")
+            .AddRow(["ScottPlot", "5.1.57", "3,989,229"])
+            .AddRow(["FftSharp", "2.2.0", "240,663"])
+            .AddRow(["Spectrogram", "2.0.0", "35,978"])
+            .AddRow(["AbfSharp", "0.7.3", "6,850"])
+            .AddRow(["FtdiSharp", "0.2.1", "2,780"])
+            .SetValue(0, "Version", "5.x")
+            .DeleteRow(4);
+        Console.WriteLine(table3.ToMarkdownString());
     }
 }
