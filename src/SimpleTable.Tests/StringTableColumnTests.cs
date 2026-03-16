@@ -135,12 +135,12 @@ public class StringTableColumnTests
     public void Test_StringTable_AddColumns_Table()
     {
         StringTable source = new(["X", "Y"]);
-        source.AppendRow(["1", "2"]);
-        source.AppendRow(["3", "4"]);
+        source.AddRow(["1", "2"]);
+        source.AddRow(["3", "4"]);
 
         StringTable table = new(["A"]);
-        table.AppendRow(["10"]);
-        table.AppendRow(["20"]);
+        table.AddRow(["10"]);
+        table.AddRow(["20"]);
 
         table.AddColumns(source);
 
@@ -187,9 +187,9 @@ public class StringTableColumnTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(table.ColumnNames[1], Is.EqualTo("EmailAddress"));
-            Assert.That(table.IndexOf("EmailAddress"), Is.EqualTo(1));
+            Assert.That(table.GetNamedColumnIndex("EmailAddress"), Is.EqualTo(1));
         }
-        Assert.Throws<KeyNotFoundException>(() => table.IndexOf("Email"));
+        Assert.Throws<KeyNotFoundException>(() => table.GetNamedColumnIndex("Email"));
     }
 
     [Test]
@@ -202,7 +202,7 @@ public class StringTableColumnTests
         {
             Assert.That(table.ColumnCount, Is.EqualTo(2));
             Assert.That(string.Join(",", table.ColumnNames), Is.EqualTo("Name,Color"));
-            Assert.That(table.IndexOf("Color"), Is.EqualTo(1));
+            Assert.That(table.GetNamedColumnIndex("Color"), Is.EqualTo(1));
             Assert.That(table[0, "Color"], Is.EqualTo("red"));
         }
     }

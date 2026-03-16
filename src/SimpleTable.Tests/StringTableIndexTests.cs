@@ -74,9 +74,9 @@ public class StringTableIndexTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(table.IndexOf("Name"), Is.EqualTo(0));
-            Assert.That(table.IndexOf("Email"), Is.EqualTo(1));
-            Assert.That(table.IndexOf("Color"), Is.EqualTo(2));
+            Assert.That(table.GetNamedColumnIndex("Name"), Is.EqualTo(0));
+            Assert.That(table.GetNamedColumnIndex("Email"), Is.EqualTo(1));
+            Assert.That(table.GetNamedColumnIndex("Color"), Is.EqualTo(2));
         }
     }
 
@@ -84,7 +84,7 @@ public class StringTableIndexTests
     public void Test_StringTable_IndexOf_UnknownName_Throws()
     {
         StringTable table = SampleData.UsersTable();
-        Assert.Throws<KeyNotFoundException>(() => table.IndexOf("Unknown"));
+        Assert.Throws<KeyNotFoundException>(() => table.GetNamedColumnIndex("Unknown"));
     }
 
     [Test]

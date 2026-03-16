@@ -109,13 +109,6 @@ public class StringTableRowTests
     }
 
     [Test]
-    public void Test_StringTable_AppendRow_WrongCount_Throws()
-    {
-        StringTable table = SampleData.UsersTable();
-        Assert.Throws<ArgumentException>(() => table.AppendRow(["A", "B"]));
-    }
-
-    [Test]
     public void Test_StringTable_AddRow_TableRow()
     {
         StringTable table = SampleData.UsersTable();
@@ -153,7 +146,7 @@ public class StringTableRowTests
     {
         StringTable table = SampleData.UsersTable();
         StringTable extra = new(["Name", "Email", "Color"]);
-        extra.AppendRow(["Alice", "alice@test.com", "purple"]);
+        extra.AddRow(["Alice", "alice@test.com", "purple"]);
         table.AddRows(extra);
 
         using (Assert.EnterMultipleScope())

@@ -1,136 +1,99 @@
 ﻿namespace SimpleTable;
 
 // TODO: modify void methods to return 'this' to support fluent API
-// TODO: xml docs for every method in this class (and test to enforce)
+
+#pragma warning disable IDE1006 // Ignore properties named with an underscore
 
 /// <summary>
-/// A simple table that stores all cell values as strings.
+/// A simple table that stores all cell values as nullable strings
 /// </summary>
 public sealed class StringTable
 {
-    private List<List<string?>> ValuesByRow { get; } = []; // TODO: make list of lists
-    private List<string> ColumnNamesList { get; }
-    private Dictionary<string, int> ColumnIndexesByName { get; }
-    public int ColumnCount => ColumnNamesList.Count;
-    public int RowCount => ValuesByRow.Count;
-    public IReadOnlyList<string> ColumnNames => ColumnNamesList;
+    #region Private Data
+
+    private List<List<string?>> _ValuesByRow { get; } = []; // TODO: make list of lists
+    private List<string> _ColumnNames { get; }
+    private Dictionary<string, int> _ColumnIndexes { get; }
+
+    #endregion
+
+    #region Public Properties
+
+    /// <summary>
+    /// Number of columns in the table
+    /// </summary>
+    public int ColumnCount => _ColumnNames.Count;
+
+    /// <summary>
+    /// Number of rows in the table
+    /// </summary>
+    public int RowCount => _ValuesByRow.Count;
+
+    /// <summary>
+    /// Collection of column names
+    /// </summary>
+    public IReadOnlyList<string> ColumnNames => _ColumnNames;
+
+    /// <summary>
+    /// Additional information about the table (title, description etc.)
+    /// </summary>
     public TableMetadata Metadata { get; set; } = new();
+
+    /// <summary>
+    /// A snapshot of the current dimensions of the table
+    /// </summary>
     public TableDimensions Dimensions => new(RowCount, ColumnCount);
 
+    /// <summary>
+    /// Index of the bottom row of the table
+    /// </summary>
     public int LastRowIndex => RowCount - 1;
+
+    /// <summary>
+    /// Index of the far right column of the table
+    /// </summary>
     public int LastColumnIndex => ColumnCount - 1;
-
-    public StringTable(int rowCount, int columnCount)
-    {
-        ColumnNamesList = [];
-        ColumnIndexesByName = new Dictionary<string, int>(ColumnNamesList.Count, StringComparer.Ordinal);
-
-        while (ColumnCount < columnCount)
-            AddColumn();
-
-        while (RowCount < rowCount)
-            AddRow();
-    }
-
-    public StringTable(params IEnumerable<string> columnNames)
-    {
-        ColumnNamesList = columnNames.ToList();
-        ColumnIndexesByName = new Dictionary<string, int>(ColumnNamesList.Count, StringComparer.Ordinal);
-
-        for (int i = 0; i < ColumnNamesList.Count; i++)
-        {
-            if (!ColumnIndexesByName.TryAdd(ColumnNamesList[i], i))
-                throw new ArgumentException($"Duplicate column name '{ColumnNamesList[i]}'.", nameof(columnNames));
-        }
-    }
-
-    public string? this[int row, int col]
-    {
-        get => ValuesByRow[row][col];
-        set => ValuesByRow[row][col] = value;
-    }
-
-    public string? this[int row, string columnName]
-    {
-        get => this[row, IndexOf(columnName)];
-        set => this[row, IndexOf(columnName)] = value;
-    }
-
-    public string? GetValue(int row, int column) => this[row, column];
-    public string? GetValue(int row, string columnName) => this[row, columnName];
-    public List<string?> GetValues(bool byRow = true) => byRow
-            ? Rows.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList()
-            : Columns.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList();
-
-    public void SetValue(TableRow row, TableColumn column, string? value) => this[row.RowIndex, column.ColumnIndex] = value;
-    public void SetValue(int row, int column, string? value) => this[row, column] = value;
-    public void SetValue(int row, string columnName, string? value) => this[row, columnName] = value;
-
-    public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList();
-    public List<TableColumn> Columns => Enumerable.Range(0, ColumnCount).Select(GetColumn).ToList();
-
-    public TableRow GetRow(int rowIndex)
-    {
-        return new TableRow()
-        {
-            RowIndex = rowIndex,
-            Values = GetRowValues(rowIndex),
-        };
-    }
-
-    public TableColumn GetColumn(int columnIndex)
-    {
-        return new TableColumn()
-        {
-            ColumnIndex = columnIndex,
-            ColumnName = ColumnNamesList[columnIndex],
-            Values = GetColumnValues(columnIndex),
-        };
-    }
-
-    public override string ToString()
-    {
-        return $"{Metadata.Title} {nameof(StringTable)} with {RowCount} rows and {ColumnCount} columns";
-    }
-
-    /// <summary>Returns the zero-based index of a named column.</summary>
-    /// <exception cref="KeyNotFoundException">Unknown column name.</exception>
-    public int IndexOf(string columnName)
-    {
-        if (!ColumnIndexesByName.TryGetValue(columnName, out int idx))
-            throw new KeyNotFoundException($"No column named '{columnName}'.");
-        return idx;
-    }
-
-    /// <summary>Appends a row. Must supply exactly <see cref="ColumnCount"/> values.</summary>
-    public void AppendRow(params string?[] values)
-    {
-        if (values.Length != ColumnNamesList.Count)
-            throw new ArgumentException(
-                $"Expected {ColumnNamesList.Count} values, got {values.Length}.", nameof(values));
-
-        ValuesByRow.Add(values.ToList());
-    }
-
-    public void ClearRows()
-    {
-        ValuesByRow.Clear();
-    }
-
-    public void Clear()
-    {
-        ValuesByRow.Clear();
-        ColumnNamesList.Clear();
-        ColumnIndexesByName.Clear();
-    }
 
     /// <summary>
     /// Display this value for null values when displaying tables as text
     /// </summary>
     public string NullDisplayString { get; set; } = "--";
 
+    #endregion
+
+    #region Constructors
+
     /// <summary>
-    /// Return an Excel style column name for a given colum index.
+    /// Create a new table of the given size, initializing all cells with null values
+    /// </summary>
+    public StringTable(int rowCount = 0, int columnCount = 0)
+    {
+        _ColumnNames = [];
+        _ColumnIndexes = new Dictionary<string, int>(_ColumnNames.Count, StringComparer.Ordinal);
+        Expand(rowCount, columnCount);
+    }
+
+    /// <summary>
+    /// Create a new table with the given collection of column names and no rows.
+    /// </summary>
+    public StringTable(IEnumerable<string> columnNames)
+    {
+        _ColumnNames = columnNames.ToList();
+        _ColumnIndexes = new Dictionary<string, int>(_ColumnNames.Count, StringComparer.Ordinal);
+
+        for (int i = 0; i < _ColumnNames.Count; i++)
+        {
+            if (!_ColumnIndexes.TryAdd(_ColumnNames[i], i))
+                throw new ArgumentException($"Duplicate column name '{_ColumnNames[i]}'.", nameof(columnNames));
+        }
+    }
+
+    #endregion
+
+    #region Column Operations
+
+    /// <summary>
+    /// Return an Excel style column name for a given column index.
     /// <code>
     /// A, B, C, ..., AA, AB, AC, ..., etc.
     /// </code>
@@ -149,26 +112,43 @@ public sealed class StringTable
         return columnName;
     }
 
+    /// <summary>
+    /// Add a column to the right side of the table filled with null values
+    /// </summary>
     public void AddColumn(string? columnName = null)
     {
         columnName ??= DefaultColumnName(ColumnCount + 1);
 
         int newIndex = ColumnCount;
-        ColumnNamesList.Add(columnName);
-        ColumnIndexesByName[columnName] = newIndex;
+        _ColumnNames.Add(columnName);
+        _ColumnIndexes[columnName] = newIndex;
 
         for (int i = 0; i < RowCount; i++)
         {
-            ValuesByRow[i].Add(null);
+            _ValuesByRow[i].Add(null);
         }
     }
 
-    public void AddColumn(IList<string?> values, string? columnName = null)
+    /// <summary>
+    /// Add a column to the right side of the table and populate it with the given collection of values.
+    /// The number of values does not have to equal the number of rows: 
+    /// the table may be partially filled or expanded to accommodate whatever values are passed in.
+    /// </summary>
+    public void AddColumn(string columnName, IReadOnlyList<string?> values)
+    {
+        AddColumn(values, columnName);
+    }
+
+    /// <summary>
+    /// Add a column to the right side of the table and populate it with the given collection of values.
+    /// The number of values does not have to equal the number of rows: 
+    /// the table may be partially filled or expanded to accommodate whatever values are passed in.
+    /// </summary>
+    public void AddColumn(IReadOnlyList<string?> values, string? columnName = null)
     {
         AddColumn(columnName);
 
-        while (RowCount < values.Count)
-            AddRow();
+        Expand(values.Count, ColumnCount);
 
         for (int i = 0; i < values.Count; i++)
         {
@@ -176,64 +156,91 @@ public sealed class StringTable
         }
     }
 
-    public void AddColumn(string columnName, IList<string?> values)
-    {
-        int newIndex = ColumnCount;
-        ColumnNamesList.Add(columnName);
-        ColumnIndexesByName[columnName] = newIndex;
-
-        // pad existing rows with an empty cell
-        for (int i = 0; i < RowCount; i++)
-        {
-            ValuesByRow[i].Add(null);
-        }
-
-        // add more rows if the data is bigger than the existing table
-        while (RowCount < values.Count)
-        {
-            AddRow();
-        }
-
-        // populate cells with values passed in
-        int lastColumnIndex = ColumnCount - 1;
-        for (int i = 0; i < values.Count; i++)
-        {
-            ValuesByRow[i][lastColumnIndex] = values[i];
-        }
-    }
-
+    /// <summary>
+    /// Add a column to the right side of the table and populate it with the given values.
+    /// The number of values does not have to equal the number of rows: 
+    /// the table may be partially filled or expanded to accommodate whatever values are passed in.
+    /// </summary>
     public void AddColumn(TableColumn column)
     {
-        AddColumn(column.ColumnName, column.Values);
+        AddColumn(column.Values, column.ColumnName);
     }
 
+    /// <summary>
+    /// Add multiple columns to the right side of the table filled with null values
+    /// </summary>
     public void AddColumns(IEnumerable<string> columnNames)
     {
         foreach (string columnName in columnNames)
             AddColumn(columnName);
     }
 
+    /// <summary>
+    /// Add multiple columns to the right side of the table filled with the given values
+    /// </summary>
     public void AddColumns(IEnumerable<TableColumn> columns)
     {
         foreach (TableColumn column in columns)
-            AddColumn(column.ColumnName, column.Values);
+            AddColumn(column.Values, column.ColumnName);
     }
 
+    /// <summary>
+    /// Copy all columns from the given table to the right side of the table
+    /// </summary>
     public void AddColumns(StringTable table)
     {
         AddColumns(table.Columns);
     }
 
+    /// <summary>
+    /// Delete the column with the given name from the table
+    /// </summary>
+    public void DeleteColumn(string columnName) => DeleteColumn(_ColumnIndexes[columnName]);
+
+    /// <summary>
+    /// Delete the given column from the table
+    /// </summary>
+    public void DeleteColumn(TableColumn column) => DeleteColumn(column.ColumnIndex);
+
+    /// <summary>
+    /// Delete the given column index (starting at 0) from the table
+    /// </summary>
+    public void DeleteColumn(int columnIndex)
+    {
+        string columnName = _ColumnNames[columnIndex];
+        _ColumnNames.RemoveAt(columnIndex);
+        _ColumnIndexes.Remove(columnName);
+
+        for (int i = columnIndex; i < _ColumnNames.Count; i++)
+            _ColumnIndexes[_ColumnNames[i]] = i;
+
+        foreach (var row in _ValuesByRow)
+            row.RemoveAt(columnIndex);
+    }
+
+    #endregion
+
+    #region Row Operations
+
+    /// <summary>
+    /// Add a row to the bottom of the table filled with null values
+    /// </summary>
     public void AddRow()
     {
         var emptyRow = Enumerable.Repeat<string?>(null, ColumnCount).ToList();
-        ValuesByRow.Add(emptyRow);
+        _ValuesByRow.Add(emptyRow);
     }
 
-    public void AddRow(IList<string?> values)
+    /// <summary>
+    /// Add a row to the bottom of the table filled with the given values.
+    /// The length does not have to be exact: the table may be partially filled or expanded to fit the collection.
+    /// </summary>
+    public void AddRow(IReadOnlyList<string?> values)
     {
         while (ColumnCount < values.Count)
+        {
             AddColumn();
+        }
 
         AddRow();
 
@@ -244,60 +251,89 @@ public sealed class StringTable
         }
     }
 
+    /// <summary>
+    /// Add a row to the bottom of the table filled with the given values.
+    /// </summary>
     public void AddRow(TableRow column)
     {
         AddRow(column.Values);
     }
 
+    /// <summary>
+    /// Add rows to the bottom of the table filled with the given values.
+    /// </summary>
     public void AddRows(IEnumerable<TableRow> rows)
     {
         foreach (TableRow row in rows)
             AddRow(row.Values);
     }
 
+    /// <summary>
+    /// Copy all rows from the given table to the right side of the table
+    /// </summary>
     public void AddRows(StringTable table)
     {
         AddRows(table.Rows);
     }
 
-    public List<string?> GetColumnValues(string columnName)
+    /// <summary>
+    /// Delete the given row from the table
+    /// </summary>
+    public void DeleteRow(TableRow row) => DeleteRow(row.RowIndex);
+
+    /// <summary>
+    /// Delete the given row (starting at 0) from the table
+    /// </summary>
+    public void DeleteRow(int rowIndex)
     {
-        int columnIndex = ColumnIndexesByName[columnName];
-        return GetColumnValues(columnIndex);
+        _ValuesByRow.RemoveAt(rowIndex);
     }
 
-    public List<string?> GetColumnValues(int columnIndex)
+    #endregion
+
+    #region Table Operations
+
+    /// <summary>
+    /// Delete all rows but preserve column names.
+    /// </summary>
+    public void ClearRows()
     {
-        return Enumerable.Range(0, RowCount).Select(x => this[x, columnIndex]).ToList();
+        _ValuesByRow.Clear();
     }
 
-    public List<string?> GetRowValues(int rowIndex)
+    /// <summary>
+    /// Delete all rows and columns to rest this table to an empty state.
+    /// </summary>
+    public void Clear()
     {
-        return Enumerable.Range(0, ColumnCount).Select(x => this[rowIndex, x]).ToList();
+        _ValuesByRow.Clear();
+        _ColumnNames.Clear();
+        _ColumnIndexes.Clear();
     }
 
-    public void SetColumnName(int index, string name)
+    /// <summary>
+    /// Increase the size of the table as needed to ensure the given number of rows and columns are present.
+    /// New cells will be populated with null values.
+    /// Default column names will be used (A, B, C, ... AA, AB, AC, ... etc)
+    /// </summary>
+    public void Expand(int rowCount, int columnCount)
     {
-        string oldName = ColumnNamesList[index];
-        ColumnNamesList[index] = name;
-        ColumnIndexesByName.Remove(oldName);
-        ColumnIndexesByName[name] = index;
-    }
-
-    public void SetColumnNames(IList<string?> names)
-    {
-        while (ColumnCount < names.Count)
+        while (ColumnCount < columnCount)
             AddColumn();
 
-        for (int i = 0; i < names.Count; i++)
-            SetColumnName(i, names[i] ?? DefaultColumnName(i));
+        while (RowCount < rowCount)
+            AddRow();
     }
 
+    /// <summary>
+    /// Rotate the entire table clockwise 90 degrees.
+    /// This will lose column names (they will be reset to A, B, C, ...).
+    /// Column names may be added after rotation with methods like 
+    /// <see cref="SetColumnNames(IReadOnlyList{string?})"/> 
+    /// and <see cref="SetColumnNamesFromFirstRow"/>.
+    /// </summary>
     public void Rotate90()
     {
-        // NOTE: since we don't have row names, column names become lost
-        //List<string> columnNames = ColumnNames.ToList();
-
         List<string?> values = GetValues();
         int initialRowCount = RowCount;
         int initialColumnCount = ColumnCount;
@@ -306,44 +342,188 @@ public sealed class StringTable
 
         Clear();
 
-        while (ColumnCount < newColumnCount)
-            AddColumn();
-
-        while (RowCount < newRowCount)
-            AddRow();
+        Expand(newRowCount, newColumnCount);
 
         for (int r = 0; r < newRowCount; r++)
+        {
             for (int c = 0; c < newColumnCount; c++)
+            {
                 this[r, c] = values[(initialRowCount - 1 - c) * initialColumnCount + r];
+
+            }
+        }
     }
 
-    public void DeleteRow(TableRow row) => DeleteRow(row.RowIndex);
+    #endregion
 
-    public void DeleteRow(int rowIndex)
+    #region Data Access
+
+    /// <summary>
+    /// Returns a string summarizing the name and dimensions of this table
+    /// </summary>
+    public override string ToString() => $"{Metadata.Title} {nameof(StringTable)} " +
+        $"with {RowCount} rows and {ColumnCount} columns";
+
+    /// <summary>
+    /// Return the value of the cell at the given row and column index (starting at 0)
+    /// </summary>
+    public string? this[int row, int col]
     {
-        ValuesByRow.RemoveAt(rowIndex);
+        get => _ValuesByRow[row][col];
+        set => _ValuesByRow[row][col] = value;
     }
 
-    public void DeleteColumn(string columnName) => DeleteColumn(ColumnIndexesByName[columnName]);
-
-    public void DeleteColumn(TableColumn column) => DeleteColumn(column.ColumnIndex);
-
-    public void DeleteColumn(int columnIndex)
+    /// <summary>
+    /// Return the value of the cell at the given row (starting at 0) for the given column name
+    /// </summary>
+    public string? this[int row, string columnName]
     {
-        string columnName = ColumnNamesList[columnIndex];
-        ColumnNamesList.RemoveAt(columnIndex);
-        ColumnIndexesByName.Remove(columnName);
-
-        for (int i = columnIndex; i < ColumnNamesList.Count; i++)
-            ColumnIndexesByName[ColumnNamesList[i]] = i;
-
-        foreach (var row in ValuesByRow)
-            row.RemoveAt(columnIndex);
+        get => this[row, GetNamedColumnIndex(columnName)];
+        set => this[row, GetNamedColumnIndex(columnName)] = value;
     }
 
+    /// <summary>
+    /// Return the value of the cell at the given row and column index (starting at 0)
+    /// </summary>
+    public string? GetValue(int row, int column) => this[row, column];
+
+    /// <summary>
+    /// Return the value of the cell at the given row (starting at 0) for the given column name
+    /// </summary>
+    public string? GetValue(int row, string columnName) => this[row, columnName];
+
+    /// <summary>
+    /// Return a serialized collection of all values from the table.
+    /// If by row is true, data will be returned as row1, row2, row3, etc.
+    /// If by row is false, data will be returned as col1, col2, col3, etc.
+    /// </summary>
+    public List<string?> GetValues(bool byRow = true) => byRow
+            ? Rows.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList()
+            : Columns.SelectMany(r => r.Values ?? Enumerable.Empty<string?>()).ToList(); // TODO: yield return?
+
+    /// <summary>
+    /// Set the value of the cell at the given row and column
+    /// </summary>
+    public void SetValue(TableRow row, TableColumn column, string? value) => this[row.RowIndex, column.ColumnIndex] = value;
+
+    /// <summary>
+    /// Set the value of the cell at the given row (starting at 0) and column name
+    /// </summary>
+    public void SetValue(int row, int column, string? value) => this[row, column] = value;
+
+    /// <summary>
+    /// Set the value of the cell at the given row and column (starting at 0)
+    /// </summary>
+    public void SetValue(int row, string columnName, string? value) => this[row, columnName] = value;
+
+    /// <summary>
+    /// Returns a collection of all rows
+    /// </summary>
+    public List<TableRow> Rows => Enumerable.Range(0, RowCount).Select(GetRow).ToList(); // TODO: yield return?
+
+    /// <summary>
+    /// Returns a collection of all columns
+    /// </summary>
+    public List<TableColumn> Columns => Enumerable.Range(0, ColumnCount).Select(GetColumn).ToList(); // TODO: yield return?
+
+    /// <summary>
+    /// Returns the row at the given position (starting at 0)
+    /// </summary>
+    public TableRow GetRow(int rowIndex)
+    {
+        return new TableRow()
+        {
+            RowIndex = rowIndex,
+            Values = GetRowValues(rowIndex),
+        };
+    }
+
+    /// <summary>
+    /// Returns the column at the given position (starting at 0)
+    /// </summary>
+    public TableColumn GetColumn(int columnIndex)
+    {
+        return new TableColumn()
+        {
+            ColumnIndex = columnIndex,
+            ColumnName = _ColumnNames[columnIndex],
+            Values = GetColumnValues(columnIndex),
+        };
+    }
+
+    /// <summary>
+    /// Return values for the given column (starting at 0)
+    /// </summary>
+    public List<string?> GetColumnValues(int columnIndex)
+    {
+        return Enumerable.Range(0, RowCount).Select(x => this[x, columnIndex]).ToList();
+    }
+
+    /// <summary>
+    /// Return values for the given column
+    /// </summary>
+    public List<string?> GetColumnValues(string columnName)
+    {
+        return GetColumnValues(GetNamedColumnIndex(columnName));
+    }
+
+    /// <summary>
+    /// Return values for the given row (starting at 0)
+    /// </summary>
+    public List<string?> GetRowValues(int rowIndex)
+    {
+        return Enumerable.Range(0, ColumnCount).Select(x => this[rowIndex, x]).ToList();
+    }
+
+    #endregion
+
+    #region Column Names
+
+    /// <summary>
+    /// Set the name of the column at the given position (starting at 0)
+    /// </summary>
+    public void SetColumnName(int columnIndex, string name)
+    {
+        string oldName = _ColumnNames[columnIndex];
+        _ColumnNames[columnIndex] = name;
+        _ColumnIndexes.Remove(oldName);
+        _ColumnIndexes[name] = columnIndex;
+    }
+
+    /// <summary>
+    /// Set the names for all columns.
+    /// The table may be expanded to accommodate the length of names.
+    /// </summary>
+    public void SetColumnNames(IReadOnlyList<string?> names)
+    {
+        Expand(RowCount, names.Count);
+
+        for (int i = 0; i < names.Count; i++)
+        {
+            SetColumnName(i, names[i] ?? DefaultColumnName(i));
+        }
+    }
+
+    /// <summary>
+    /// <summary>Returns the zero-based index of a named column.</summary>
+    /// </summary>
+    public int GetNamedColumnIndex(string columnName)
+    {
+        if (!_ColumnIndexes.TryGetValue(columnName, out int index))
+            throw new KeyNotFoundException($"No column named '{columnName}'.");
+
+        return index;
+    }
+
+    /// <summary>
+    /// Delete the first row from the table and apply its values as column names.
+    /// Default column names (A, B, C, ...) will be used for cells with null values.
+    /// </summary>
     public void SetColumnNamesFromFirstRow()
     {
         SetColumnNames(GetRow(0).Values);
         DeleteRow(0);
     }
+
+    #endregion
 }

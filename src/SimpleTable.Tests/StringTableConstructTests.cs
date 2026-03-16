@@ -8,10 +8,10 @@ public class StringTableConstructTests
     public void Test_StringTable_Construct()
     {
         StringTable table = new(["Name", "Email", "Color"]);
-        table.AppendRow(["Scott", "scott@hotmail.com", "red"]);
-        table.AppendRow(["James", "james@gmail.com", "green"]);
-        table.AppendRow(["Ben", "ben@yahoo.com", "blue"]);
-        table.AppendRow(["Rob", "rob@aol.com", "gray"]);
+        table.AddRow(["Scott", "scott@hotmail.com", "red"]);
+        table.AddRow(["James", "james@gmail.com", "green"]);
+        table.AddRow(["Ben", "ben@yahoo.com", "blue"]);
+        table.AddRow(["Rob", "rob@aol.com", "gray"]);
 
         Console.WriteLine(table.ToDisplayString());
         Console.WriteLine(table.ToMarkdownString());
