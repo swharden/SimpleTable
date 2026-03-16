@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using SimpleTable.IO;
+using System.Diagnostics;
 
 namespace SimpleTable.Tests;
 
@@ -36,7 +37,7 @@ internal class ReadmeQuickstart
         table.SetColumnNamesFromFirstRow();
         Console.WriteLine(table.ToMarkdownString());
 
-        // Clear the table and repopulate it dyncamically
+        // Clear the table and repopulate it dynamically
         table.Clear();
         table.AddColumns(["Date", "Price", "Volume"]);
         Random rand = new(0);

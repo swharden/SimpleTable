@@ -1,3 +1,5 @@
+using SimpleTable.IO;
+
 namespace SimpleTable.Tests;
 
 public class StringTableConstructTests

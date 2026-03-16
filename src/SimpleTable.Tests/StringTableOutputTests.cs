@@ -1,3 +1,5 @@
+using SimpleTable.IO;
+
 namespace SimpleTable.Tests;
 
 public class StringTableOutputTests
@@ -22,18 +24,18 @@ public class StringTableOutputTests
         StringTable table = new(["A", "B"]);
         table.AddRow(["hello", null]);
 
-        string original = StringTable.NullDisplayString;
+        string original = table.NullDisplayString;
         try
         {
-            Assert.That(StringTable.NullDisplayString, Is.EqualTo("--"));
+            Assert.That(table.NullDisplayString, Is.EqualTo("--"));
             Assert.That(table.ToDisplayString(), Does.Contain("--"));
 
-            StringTable.NullDisplayString = "N/A";
+            table.NullDisplayString = "N/A";
             Assert.That(table.ToDisplayString(), Does.Contain("N/A"));
         }
         finally
         {
-            StringTable.NullDisplayString = original;
+            table.NullDisplayString = original;
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using SimpleTable;
+using SimpleTable.IO;
 
 StringTable table = SampleData.Consecutive(3, 4);
 Console.WriteLine(table.ToDisplayString());

@@ -1,8 +1,7 @@
-﻿using System.Text;
-
-namespace SimpleTable;
+﻿namespace SimpleTable;
 
 // TODO: modify void methods to return 'this' to support fluent API
+// TODO: xml docs for every method in this class (and test to enforce)
 
 /// <summary>
 /// A simple table that stores all cell values as strings.
@@ -126,159 +125,15 @@ public sealed class StringTable
     }
 
     /// <summary>
-    /// Returns the table as an aligned plain-text string with box-drawing borders.
+    /// Display this value for null values when displaying tables as text
+    /// </summary>
+    public string NullDisplayString { get; set; } = "--";
+
+    /// <summary>
+    /// Return an Excel style column name for a given colum index.
     /// <code>
-    /// +---------+-----+--------+
-    /// | Name    | Age | City   |
-    /// +---------+-----+--------+
-    /// | Alice   | 30  | Boston |
-    /// +---------+-----+--------+
+    /// A, B, C, ..., AA, AB, AC, ..., etc.
     /// </code>
-    /// </summary>
-    public string ToDisplayString()
-    {
-        if (ColumnCount == 0)
-            return string.Empty;
-
-        int[] widths = MeasureColumnWidths();
-        string border = BuildBorder(widths, '+', '-');
-        string headerSep = border;
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine(border);
-        sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
-        sb.AppendLine(headerSep);
-        foreach (var row in ValuesByRow)
-            sb.AppendLine(BuildCellsRow(row, widths));
-        sb.AppendLine(border);
-        return sb.ToString();
-    }
-
-    private static string EscapeCsvField(string? value)
-    {
-        if (value is null)
-            return string.Empty;
-
-        // Escape double quotes by doubling them
-        string escaped = value.Replace("\"", "\"\"");
-
-        // If the field contains a comma, quote, CR or LF then wrap in double quotes
-        if (escaped.IndexOfAny([',', '"', '\r', '\n']) >= 0)
-            return '"' + escaped + '"';
-
-        return escaped;
-    }
-
-    /// <summary>
-    /// Returns the table as a Markdown-formatted string.
-    /// <code>
-    /// | Name  | Age | City   |
-    /// |-------|-----|--------|
-    /// | Alice | 30  | Boston |
-    /// </code>
-    /// </summary>
-    public string ToMarkdownString()
-    {
-        if (ColumnCount == 0)
-            return string.Empty;
-
-        int[] widths = MeasureColumnWidths();
-        string headerSep = BuildBorder(widths, '|', '-');
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine(BuildColumnNameRow(ColumnNamesList, widths));
-        sb.AppendLine(headerSep);
-        foreach (var row in ValuesByRow)
-            sb.AppendLine(BuildCellsRow(row, widths));
-        return sb.ToString();
-    }
-
-    public string ToCsvString()
-    {
-        var sb = new StringBuilder();
-
-        // Prefix with a UTF-8 BOM so Excel on Windows will usually detect UTF-8 encoding.
-        sb.Append('\uFEFF');
-
-        for (int c = 0; c < ColumnCount; c++)
-        {
-            if (c > 0)
-                sb.Append(',');
-            sb.Append(EscapeCsvField(ColumnNamesList[c]));
-        }
-        sb.Append("\r\n");
-
-        foreach (TableRow row in Rows)
-        {
-            for (int c = 0; c < row.Values.Count; c++)
-            {
-                if (c > 0)
-                    sb.Append(',');
-                sb.Append(EscapeCsvField(row.Values[c]));
-            }
-            sb.Append("\r\n");
-        }
-
-        return sb.ToString();
-    }
-
-    private int[] MeasureColumnWidths()
-    {
-        int[] widths = new int[ColumnCount];
-        for (int c = 0; c < ColumnCount; c++)
-            widths[c] = ColumnNamesList[c].Length;
-        foreach (var row in ValuesByRow)
-            for (int c = 0; c < ColumnCount; c++)
-                widths[c] = Math.Max(widths[c], row[c]?.Length ?? NullDisplayString.Length);
-        return widths;
-    }
-
-    private static string BuildBorder(int[] widths, char corner, char fill)
-    {
-        var sb = new System.Text.StringBuilder();
-        sb.Append(corner);
-        foreach (int w in widths)
-            sb.Append(fill, w + 2).Append(corner);
-        return sb.ToString();
-    }
-
-    /// <summary>
-    /// Used for null values when displaying tables as text
-    /// </summary>
-    public static string NullDisplayString { get; set; } = "--";
-
-    private static string BuildCellsRow(List<string?> cells, int[] widths)
-    {
-        StringBuilder sb = new("|");
-
-        for (int c = 0; c < cells.Count; c++)
-        {
-            sb.Append(' ')
-                .Append((cells[c] ?? NullDisplayString)
-                .PadRight(widths[c]))
-                .Append(" |");
-        }
-
-        return sb.ToString();
-    }
-
-    private static string BuildColumnNameRow(List<string> columnNames, int[] widths)
-    {
-        StringBuilder sb = new("|");
-
-        for (int c = 0; c < columnNames.Count; c++)
-        {
-            sb.Append(' ')
-                .Append((columnNames[c] ?? string.Empty)
-                .PadRight(widths[c]))
-                .Append(" |");
-        }
-
-        return sb.ToString();
-    }
-
-    /// <summary>
-    /// Return an Excel style column name (A, B, C, ..., AA, AB, AC, ...)
     /// </summary>
     public static string DefaultColumnName(int columnIndex)
     {
@@ -436,17 +291,6 @@ public sealed class StringTable
 
         for (int i = 0; i < names.Count; i++)
             SetColumnName(i, names[i] ?? DefaultColumnName(i));
-    }
-
-    public void LaunchInDefaultBrowser(string? saveAs = null)
-    {
-        saveAs ??= $"{DateTime.UtcNow.Ticks}.html";
-        saveAs = Path.GetFullPath(saveAs);
-
-        string html = Exporters.HtmlExporter.GetStyledHtml(this);
-        string html2 = Exporters.Html.WrapInHtml(html);
-        File.WriteAllText(saveAs, html2);
-        Launch.DefaultBrowser(saveAs);
     }
 
     public void Rotate90()
