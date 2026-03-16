@@ -184,8 +184,11 @@ public class StringTableColumnTests
         StringTable table = SampleData.UsersTable();
         table.SetColumnName(1, "EmailAddress");
 
-        Assert.That(table.ColumnNames[1], Is.EqualTo("EmailAddress"));
-        Assert.That(table.IndexOf("EmailAddress"), Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(table.ColumnNames[1], Is.EqualTo("EmailAddress"));
+            Assert.That(table.IndexOf("EmailAddress"), Is.EqualTo(1));
+        }
         Assert.Throws<KeyNotFoundException>(() => table.IndexOf("Email"));
     }
 

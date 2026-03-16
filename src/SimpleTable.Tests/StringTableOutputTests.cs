@@ -27,8 +27,11 @@ public class StringTableOutputTests
         string original = table.NullDisplayString;
         try
         {
-            Assert.That(table.NullDisplayString, Is.EqualTo("--"));
-            Assert.That(table.ToDisplayString(), Does.Contain("--"));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(table.NullDisplayString, Is.EqualTo("--"));
+                Assert.That(table.ToDisplayString(), Does.Contain("--"));
+            }
 
             table.NullDisplayString = "N/A";
             Assert.That(table.ToDisplayString(), Does.Contain("N/A"));
