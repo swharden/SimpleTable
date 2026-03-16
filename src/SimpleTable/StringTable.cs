@@ -1,7 +1,5 @@
 ﻿namespace SimpleTable;
 
-// TODO: modify void methods to return 'this' to support fluent API
-
 #pragma warning disable IDE1006 // Ignore properties named with an underscore
 
 /// <summary>
@@ -115,7 +113,7 @@ public sealed class StringTable
     /// <summary>
     /// Add a column to the right side of the table filled with null values
     /// </summary>
-    public void AddColumn(string? columnName = null)
+    public StringTable AddColumn(string? columnName = null)
     {
         columnName ??= DefaultColumnName(ColumnCount + 1);
 
@@ -127,6 +125,8 @@ public sealed class StringTable
         {
             _ValuesByRow[i].Add(null);
         }
+
+        return this;
     }
 
     /// <summary>
@@ -134,9 +134,10 @@ public sealed class StringTable
     /// The number of values does not have to equal the number of rows: 
     /// the table may be partially filled or expanded to accommodate whatever values are passed in.
     /// </summary>
-    public void AddColumn(string columnName, IReadOnlyList<string?> values)
+    public StringTable AddColumn(string columnName, IReadOnlyList<string?> values)
     {
         AddColumn(values, columnName);
+        return this;
     }
 
     /// <summary>
@@ -144,7 +145,7 @@ public sealed class StringTable
     /// The number of values does not have to equal the number of rows: 
     /// the table may be partially filled or expanded to accommodate whatever values are passed in.
     /// </summary>
-    public void AddColumn(IReadOnlyList<string?> values, string? columnName = null)
+    public StringTable AddColumn(IReadOnlyList<string?> values, string? columnName = null)
     {
         AddColumn(columnName);
 
@@ -154,6 +155,8 @@ public sealed class StringTable
         {
             this[i, LastColumnIndex] = values[i];
         }
+
+        return this;
     }
 
     /// <summary>
@@ -161,51 +164,57 @@ public sealed class StringTable
     /// The number of values does not have to equal the number of rows: 
     /// the table may be partially filled or expanded to accommodate whatever values are passed in.
     /// </summary>
-    public void AddColumn(TableColumn column)
+    public StringTable AddColumn(TableColumn column)
     {
         AddColumn(column.Values, column.ColumnName);
+        return this;
     }
 
     /// <summary>
     /// Add multiple columns to the right side of the table filled with null values
     /// </summary>
-    public void AddColumns(IEnumerable<string> columnNames)
+    public StringTable AddColumns(IEnumerable<string> columnNames)
     {
         foreach (string columnName in columnNames)
             AddColumn(columnName);
+
+        return this;
     }
 
     /// <summary>
     /// Add multiple columns to the right side of the table filled with the given values
     /// </summary>
-    public void AddColumns(IEnumerable<TableColumn> columns)
+    public StringTable AddColumns(IEnumerable<TableColumn> columns)
     {
         foreach (TableColumn column in columns)
             AddColumn(column.Values, column.ColumnName);
+
+        return this;
     }
 
     /// <summary>
     /// Copy all columns from the given table to the right side of the table
     /// </summary>
-    public void AddColumns(StringTable table)
+    public StringTable AddColumns(StringTable table)
     {
         AddColumns(table.Columns);
+        return this;
     }
 
     /// <summary>
     /// Delete the column with the given name from the table
     /// </summary>
-    public void DeleteColumn(string columnName) => DeleteColumn(_ColumnIndexes[columnName]);
+    public StringTable DeleteColumn(string columnName) => DeleteColumn(_ColumnIndexes[columnName]);
 
     /// <summary>
     /// Delete the given column from the table
     /// </summary>
-    public void DeleteColumn(TableColumn column) => DeleteColumn(column.ColumnIndex);
+    public StringTable DeleteColumn(TableColumn column) => DeleteColumn(column.ColumnIndex);
 
     /// <summary>
     /// Delete the given column index (starting at 0) from the table
     /// </summary>
-    public void DeleteColumn(int columnIndex)
+    public StringTable DeleteColumn(int columnIndex)
     {
         string columnName = _ColumnNames[columnIndex];
         _ColumnNames.RemoveAt(columnIndex);
@@ -216,6 +225,8 @@ public sealed class StringTable
 
         foreach (var row in _ValuesByRow)
             row.RemoveAt(columnIndex);
+
+        return this;
     }
 
     #endregion
@@ -225,17 +236,18 @@ public sealed class StringTable
     /// <summary>
     /// Add a row to the bottom of the table filled with null values
     /// </summary>
-    public void AddRow()
+    public StringTable AddRow()
     {
         var emptyRow = Enumerable.Repeat<string?>(null, ColumnCount).ToList();
         _ValuesByRow.Add(emptyRow);
+        return this;
     }
 
     /// <summary>
     /// Add a row to the bottom of the table filled with the given values.
     /// The length does not have to be exact: the table may be partially filled or expanded to fit the collection.
     /// </summary>
-    public void AddRow(IReadOnlyList<string?> values)
+    public StringTable AddRow(IReadOnlyList<string?> values)
     {
         while (ColumnCount < values.Count)
         {
@@ -249,44 +261,51 @@ public sealed class StringTable
         {
             this[lastRowIndex, i] = values[i];
         }
+
+        return this;
     }
 
     /// <summary>
     /// Add a row to the bottom of the table filled with the given values.
     /// </summary>
-    public void AddRow(TableRow column)
+    public StringTable AddRow(TableRow column)
     {
         AddRow(column.Values);
+        return this;
     }
 
     /// <summary>
     /// Add rows to the bottom of the table filled with the given values.
     /// </summary>
-    public void AddRows(IEnumerable<TableRow> rows)
+    public StringTable AddRows(IEnumerable<TableRow> rows)
     {
         foreach (TableRow row in rows)
             AddRow(row.Values);
+
+        return this;
     }
 
     /// <summary>
     /// Copy all rows from the given table to the right side of the table
     /// </summary>
-    public void AddRows(StringTable table)
+    public StringTable AddRows(StringTable table)
     {
         AddRows(table.Rows);
+        return this;
     }
 
     /// <summary>
     /// Delete the given row from the table
     /// </summary>
-    public void DeleteRow(TableRow row) => DeleteRow(row.RowIndex);
+    public StringTable DeleteRow(TableRow row) => DeleteRow(row.RowIndex);
 
     /// <summary>
     /// Delete the given row (starting at 0) from the table
     /// </summary>
-    public void DeleteRow(int rowIndex)
+    public StringTable DeleteRow(int rowIndex)
     {
         _ValuesByRow.RemoveAt(rowIndex);
+        return this;
     }
 
     #endregion
@@ -296,19 +315,21 @@ public sealed class StringTable
     /// <summary>
     /// Delete all rows but preserve column names.
     /// </summary>
-    public void ClearRows()
+    public StringTable ClearRows()
     {
         _ValuesByRow.Clear();
+        return this;
     }
 
     /// <summary>
     /// Delete all rows and columns to rest this table to an empty state.
     /// </summary>
-    public void Clear()
+    public StringTable Clear()
     {
         _ValuesByRow.Clear();
         _ColumnNames.Clear();
         _ColumnIndexes.Clear();
+        return this;
     }
 
     /// <summary>
@@ -316,13 +337,15 @@ public sealed class StringTable
     /// New cells will be populated with null values.
     /// Default column names will be used (A, B, C, ... AA, AB, AC, ... etc)
     /// </summary>
-    public void Expand(int rowCount, int columnCount)
+    public StringTable Expand(int rowCount, int columnCount)
     {
         while (ColumnCount < columnCount)
             AddColumn();
 
         while (RowCount < rowCount)
             AddRow();
+
+        return this;
     }
 
     /// <summary>
@@ -332,7 +355,7 @@ public sealed class StringTable
     /// <see cref="SetColumnNames(IReadOnlyList{string?})"/> 
     /// and <see cref="SetColumnNamesFromFirstRow"/>.
     /// </summary>
-    public void Rotate90()
+    public StringTable Rotate90()
     {
         List<string?> values = GetValues();
         int initialRowCount = RowCount;
@@ -352,6 +375,8 @@ public sealed class StringTable
 
             }
         }
+
+        return this;
     }
 
     #endregion
@@ -404,17 +429,29 @@ public sealed class StringTable
     /// <summary>
     /// Set the value of the cell at the given row and column
     /// </summary>
-    public void SetValue(TableRow row, TableColumn column, string? value) => this[row.RowIndex, column.ColumnIndex] = value;
+    public StringTable SetValue(TableRow row, TableColumn column, string? value)
+    {
+        this[row.RowIndex, column.ColumnIndex] = value;
+        return this;
+    }
 
     /// <summary>
     /// Set the value of the cell at the given row (starting at 0) and column name
     /// </summary>
-    public void SetValue(int row, int column, string? value) => this[row, column] = value;
+    public StringTable SetValue(int row, int column, string? value)
+    {
+        this[row, column] = value;
+        return this;
+    }
 
     /// <summary>
     /// Set the value of the cell at the given row and column (starting at 0)
     /// </summary>
-    public void SetValue(int row, string columnName, string? value) => this[row, columnName] = value;
+    public StringTable SetValue(int row, string columnName, string? value)
+    {
+        this[row, columnName] = value;
+        return this;
+    }
 
     /// <summary>
     /// Returns a collection of all rows
@@ -482,19 +519,20 @@ public sealed class StringTable
     /// <summary>
     /// Set the name of the column at the given position (starting at 0)
     /// </summary>
-    public void SetColumnName(int columnIndex, string name)
+    public StringTable SetColumnName(int columnIndex, string name)
     {
         string oldName = _ColumnNames[columnIndex];
         _ColumnNames[columnIndex] = name;
         _ColumnIndexes.Remove(oldName);
         _ColumnIndexes[name] = columnIndex;
+        return this;
     }
 
     /// <summary>
     /// Set the names for all columns.
     /// The table may be expanded to accommodate the length of names.
     /// </summary>
-    public void SetColumnNames(IReadOnlyList<string?> names)
+    public StringTable SetColumnNames(IReadOnlyList<string?> names)
     {
         Expand(RowCount, names.Count);
 
@@ -502,6 +540,8 @@ public sealed class StringTable
         {
             SetColumnName(i, names[i] ?? DefaultColumnName(i));
         }
+
+        return this;
     }
 
     /// <summary>
@@ -519,10 +559,11 @@ public sealed class StringTable
     /// Delete the first row from the table and apply its values as column names.
     /// Default column names (A, B, C, ...) will be used for cells with null values.
     /// </summary>
-    public void SetColumnNamesFromFirstRow()
+    public StringTable SetColumnNamesFromFirstRow()
     {
         SetColumnNames(GetRow(0).Values);
         DeleteRow(0);
+        return this;
     }
 
     #endregion
