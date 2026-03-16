@@ -67,7 +67,7 @@ internal class ReadmeQuickstart
         Console.WriteLine(table.ToMarkdownString());
 
         // Methods can be chained to work with tables using a fluent API
-        StringTable table3 = new StringTable()
+        new StringTable()
             .AddColumn("Package")
             .AddColumn("Version")
             .AddColumn("Downloads")
@@ -77,7 +77,7 @@ internal class ReadmeQuickstart
             .AddRow(["AbfSharp", "0.7.3", "6,850"])
             .AddRow(["FtdiSharp", "0.2.1", "2,780"])
             .SetValue(0, "Version", "5.x")
-            .DeleteRow(4);
-        Console.WriteLine(table3.ToMarkdownString());
+            .DeleteRow(4)
+            .WriteLineMarkdown();
     }
 }

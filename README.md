@@ -175,9 +175,8 @@ StringTable table = new StringTable()
     .AddRow(["AbfSharp", "0.7.3", "6,850"])
     .AddRow(["FtdiSharp", "0.2.1", "2,780"])
     .SetValue(0, "Version", "5.x")
-    .DeleteRow(4);
-
-Console.WriteLine(table.ToMarkdownString());
+    .DeleteRow(4)
+    .WriteLineMarkdow();
 ```
 
 | Package     | Version | Downloads |

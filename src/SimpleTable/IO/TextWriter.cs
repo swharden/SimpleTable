@@ -4,6 +4,16 @@ namespace SimpleTable.IO;
 
 public static class TextWriter
 {
+    public static void WriteLineDisplay(this StringTable table)
+    {
+        Console.WriteLine(table.ToDisplayString());
+    }
+
+    public static void WriteLineMarkdown(this StringTable table)
+    {
+        Console.WriteLine(table.ToMarkdownString());
+    }
+
     /// <summary>
     /// Returns the table as an aligned plain-text string with box-drawing borders.
     /// <code>

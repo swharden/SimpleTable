@@ -4,6 +4,11 @@ namespace SimpleTable.IO;
 
 public static class CsvWriter
 {
+    public static void WriteLineCsv(this StringTable table)
+    {
+        Console.WriteLine(table.ToCsvString());
+    }
+
     /// <summary>
     /// Returns the table as an Excel-compatible CSV string.
     /// <code>
